@@ -15,7 +15,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js main.js",
+    "start": "./node_modules/nodemon/bin/nodemon.js main.js -e js,mjs,css,html,json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
