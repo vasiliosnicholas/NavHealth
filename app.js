@@ -1,4 +1,5 @@
 import express from "express";
+import { connectDb } from "./db.js";
 
 const app = {};
 
@@ -7,7 +8,9 @@ const PORT = process.env.PORT || 3000;
 
 app.server = express();
 
-app.run = () => {
+app.run = async () => {
+  await connectDb();
+
   app.server.use(express.static("public"));
 
   app.server.listen(PORT, HOST, () => {

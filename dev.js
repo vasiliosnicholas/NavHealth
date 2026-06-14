@@ -10,4 +10,4 @@ liveServer.server.once("connection", () => {
   }, 100);
 });
 app.server.use(connectLiveReload());
-app.run();
+await app.run();

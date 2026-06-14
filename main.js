@@ -1,2 +1,2 @@
 import app from "./app.js";
-app.run();
+await app.run();
