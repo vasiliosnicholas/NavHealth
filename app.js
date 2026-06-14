@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 app.server = express();
 
 app.run = async () => {
-  await connectDb();
+  //await connectDb();
 
   app.server.use(express.static("public"));
 
