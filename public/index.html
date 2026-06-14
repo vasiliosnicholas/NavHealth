@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NavHealth</title>
+    <meta name="author" content="Vasilios Nicholas, Aryan Yadav" />
+    <meta name="description" content="Landing Page for NavHealth" />
+    <link rel="icon" type="./image/x-icon" href="./images/NavHealth.png" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Basic&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body class="d-flex flex-column vh-100 mb-auto">
+    <header class="mb-auto">
+      <h1 class="visually-hidden">NavHealth</h1>
+      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid justify-content-between">
+          <a class="navbar-brand fs-1 basic-regular" href="#">
+            Nav<img class="" src="./images/NavHealth.png" alt="" />Health</a
+          >
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div
+            class="collapse navbar-collapse justify-content-end"
+            id="navbarNav"
+          >
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Login/Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">List Your Business</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main
+      class="container-fluid text-center flex-fill justify-content-center align-content-center"
+    >
+      <div class="container bg-body-tertiary rounded-4 py-4">
+        <div class="row">
+          <h2 class="col basic-regular mb-5">
+            Connecting you with your healthcare needs.
+          </h2>
+        </div>
+        <div class="row justify-content-center">
+          <form class="w-50 d-flex" role="search-form">
+            <input
+              class="form-control"
+              type="search"
+              placeholder="Search for ..."
+              aria-label="Search"
+            />
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary">Search</button>
+              <button
+                type="button"
+                class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span class="sr-only">by Services</span>
+              </button>
+              <div class="dropdown-menu">
+                <a class="dropdown-item active" href="?Services="
+                  >by Services</a
+                >
+                <a class="dropdown-item" href="?Location=">by Location</a>
+                <a class="dropdown-item" href="?Name=">by Name</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+    <footer class="container-fluid row bg-body-tertiary pt-3">
+      <span class="col">NavHealth</span>
+      <span class="col text-end">by Vasilios Nicholas and Aryan Yadav.</span>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      type="module"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="./scripts/landing.js"></script>
+  </body>
+</html>
