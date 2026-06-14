@@ -13,8 +13,9 @@
   "license": "MIT",
   "author": "Vasilios Nicholas, Aryan Yadav",
   "type": "module",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
+    "start": "./node_modules/nodemon/bin/nodemon.js main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
   },
   "dependencies": {
     "express": "^5.2.1",
+    "mongodb": "^7.3.0",
     "nodemon": "^3.1.14"
   }
 }
