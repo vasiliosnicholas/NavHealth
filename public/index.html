@@ -27,7 +27,11 @@
       <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid justify-content-between">
           <a class="navbar-brand fs-1 basic-regular" href="#">
-            Nav<img class="" src="./images/NavHealth.png" alt="" />Health</a
+            Nav<img
+              class=""
+              src="./images/NavHealth.png"
+              alt="NavHealth Logo"
+            />Health</a
           >
           <button
             class="navbar-toggler"
@@ -49,7 +53,7 @@
                 <a class="nav-link active" aria-current="page" href="#">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Login/Register</a>
+                <a class="nav-link" href="login.html">Login/Register</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">List Your Business</a>
@@ -60,7 +64,7 @@
       </nav>
     </header>
     <main
-      class="d-flex flex-column text-center flex-fill justify-content-center align-items-center"
+      class="d-flex flex-column text-center flex-fill justify-content-center align-items-center add-background"
     >
       <div class="hero-glass">
         <div class="row">
@@ -68,16 +72,23 @@
             Connecting you with your healthcare needs.
           </h2>
         </div>
+        <!--Search-->
         <div class="row justify-content-center">
           <form class="hero-search-form d-flex" role="search-form">
             <input
               class="form-control"
-              type="search"
-              placeholder="Search for ..."
-              aria-label="Search"
+              list="datalistOptions"
+              id="exampleDataList"
+              placeholder="Type to search..."
             />
+            <datalist id="datalistOptions">
+              <option value="Family Care"></option>
+              <option value="Emergency Medicine"></option>
+              <option value="Urgent Care"></option>
+            </datalist>
+            <!--Split-Dropdown-->
             <div class="btn-group">
-              <button type="button" class="btn btn-primary">Search</button>
+              <button type="submit" class="btn btn-primary">Search</button>
               <button
                 type="button"
                 class="btn btn-primary dropdown-toggle dropdown-toggle-split"
