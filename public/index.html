@@ -74,36 +74,31 @@
         </div>
         <!--Search-->
         <div class="row justify-content-center">
-          <form class="hero-search-form d-flex" role="search-form">
+          <form class="hero-search-form d-flex" id="search-form" role="search-form">
             <input
               class="form-control"
-              list="datalistOptions"
-              id="exampleDataList"
+              type="text"
+              list="searchDatalistOptions"
+              id="search-bar"
               placeholder="Type to search..."
             />
-            <datalist id="datalistOptions">
-              <option value="Family Care"></option>
-              <option value="Emergency Medicine"></option>
-              <option value="Urgent Care"></option>
+            <datalist id="searchDatalistOptions">
             </datalist>
             <!--Split-Dropdown-->
             <div class="btn-group">
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" 
+              id="submit-search" class="btn btn-primary">Search</button>
               <button
                 type="button"
                 class="btn btn-primary dropdown-toggle dropdown-toggle-split"
                 data-bs-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
+                id="search-dropdown-btn"
               >
-                <span class="sr-only">by Services</span>
+                <span id="search-dropdown-btn-name" class="sr-only">by Services</span>
               </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item active" href="?Services="
-                  >by Services</a
-                >
-                <a class="dropdown-item" href="?Location=">by Location</a>
-                <a class="dropdown-item" href="?Name=">by Name</a>
+              <div id="search-dropdown" class="dropdown-menu">
               </div>
             </div>
           </form>
