@@ -1,3 +1,5 @@
+import SearchAndDropDownGenerator from "./SearchAndDropDownGenerator.js";
+
 const dataList = document.getElementById("searchDatalistOptions");
 const dropDown = document.getElementById("search-dropdown");
 const dropDownBtnName = document.getElementById("search-dropdown-btn-name");
@@ -15,47 +17,19 @@ const categories = {
   ],
 }; //TODO: Replace this with data from Databases.
 
-let searchType = `Services`;
+const initialSearchCategory = `Services`;
+const categoryPrefix = `by`;
 
-function populateDataList() {
-  dataList.innerHTML = ``;
-  for (const option of categories[searchType]) {
-    const optn = document.createElement("option");
-    optn.value = option;
-    dataList.appendChild(optn);
-  }
-}
-
-function genDropDown() {
-  dropDown.innerHTML = ``;
-  for (const category of Object.keys(categories)) {
-    const btn = document.createElement("button");
-    btn.classList.add("dropdown-item");
-    btn.innerHTML = `by ${category}`;
-    if (category === searchType) {
-      btn.classList.add("active");
-    }
-    dropDown.appendChild(btn);
-    btn.addEventListener("click", (event) => {
-      event.preventDefault();
-      if (!btn.classList.contains("active")) {
-        for (const element of dropDown.children) {
-          if (element.classList.contains("active")) {
-            element.classList.remove("active");
-          }
-        }
-        btn.classList.add("active");
-        searchType = btn.innerHTML.replace("by ", "");
-        dropDownBtnName.innerHTML = btn.innerHTML;
-        populateDataList();
-      }
-    });
-  }
-}
-genDropDown();
-populateDataList();
+const mainSearchBarGen = SearchAndDropDownGenerator(
+  dropDown,
+  dropDownBtnName,
+  dataList,
+  categories,
+  initialSearchCategory,
+  categoryPrefix,
+);
 
 searchForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  window.location.href = `${SEARCH_URL}?searchType=${searchType.toLowerCase()}&searchString=${searchBar.value.replace(" ", "_")}`;
+  window.location.href = `${SEARCH_URL}?searchType=${mainSearchBarGen.getActiveSearchCategory().toLowerCase()}&searchString=${searchBar.value.replace(" ", "_")}`;
 });
