@@ -3,7 +3,7 @@ export default function SearchAndDropDownGenerator(
   dropDownBtnName,
   categories,
   initialCategory,
-  eventListFunctionsToExecute = undefined,
+  eventListenerFunctionsToExecute = undefined,
   prefix = undefined,
 ) {
   if (typeof categories !== "object") {
@@ -45,8 +45,8 @@ export default function SearchAndDropDownGenerator(
             currentCategory = btn.innerHTML;
           }
           dropDownBtnName.innerHTML = btn.innerHTML;
-          if (eventListFunctionsToExecute !== undefined) {
-            for (const func of eventListFunctionsToExecute) {
+          if (eventListenerFunctionsToExecute !== undefined) {
+            for (const func of eventListenerFunctionsToExecute) {
               func(currentCategory);
             }
           }
