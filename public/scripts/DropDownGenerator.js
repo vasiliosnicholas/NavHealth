@@ -4,6 +4,7 @@ export default function SearchAndDropDownGenerator(
   categories,
   initialCategory,
   eventListenerFunctionsToExecute = undefined,
+  executeEventListenerFunctionsOnInitialization = true,
   prefix = undefined,
 ) {
   if (typeof categories !== "object") {
@@ -18,6 +19,14 @@ export default function SearchAndDropDownGenerator(
   //TODO: Add error handling for html element params.
   let currentCategory = initialCategory;
   const gen = {};
+
+  function executeEventListenerFunctions() {
+    if (eventListenerFunctionsToExecute !== undefined) {
+      for (const func of eventListenerFunctionsToExecute) {
+        func(currentCategory);
+      }
+    }
+  }
 
   function genDropDown() {
     dropDown.innerHTML = ``;
@@ -45,11 +54,7 @@ export default function SearchAndDropDownGenerator(
             currentCategory = btn.innerHTML;
           }
           dropDownBtnName.innerHTML = btn.innerHTML;
-          if (eventListenerFunctionsToExecute !== undefined) {
-            for (const func of eventListenerFunctionsToExecute) {
-              func(currentCategory);
-            }
-          }
+          executeEventListenerFunctions();
         }
       });
     }
@@ -61,6 +66,11 @@ export default function SearchAndDropDownGenerator(
   function getActiveCategory() {
     return currentCategory;
   }
+  //execute for functions on initial category.
+  if (executeEventListenerFunctionsOnInitialization) {
+    executeEventListenerFunctions();
+  }
+  gen.executeEventListenerFunctions = executeEventListenerFunctions;
   gen.genDropDown = genDropDown();
   gen.getActiveSearchCategory = getActiveCategory;
   return gen;

@@ -49,6 +49,7 @@ export default function SearchAndDropDownGenerator(
     categories,
     initialSearchCategory,
     [gen.populateDataList],
+    true,
     prefix,
   );
 
@@ -59,8 +60,7 @@ export default function SearchAndDropDownGenerator(
   function getActiveSearchCategory() {
     return dropDownGen.getActiveCategory();
   }
-  // genDropDown();
-  populateDataList(initialSearchCategory);
+
   gen.getActiveSearchCategory = getActiveSearchCategory;
   return gen;
 }
