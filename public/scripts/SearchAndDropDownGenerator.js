@@ -46,7 +46,7 @@ export default function SearchAndDropDownGenerator(
   const dropDownGen = DropDownGenerator(
     dropDown,
     dropDownBtnName,
-    categories,
+    Object.keys(categories),
     initialSearchCategory,
     [gen.populateDataList],
     true,
