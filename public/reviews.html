@@ -23,7 +23,7 @@
   </head>
   <body>
     <header class="">
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="navbar">
         <div class="container-fluid justify-content-between">
           <a class="navbar-brand fs-1 basic-regular" href="#">
             Nav<img
@@ -74,8 +74,13 @@
       <div class="container-fluid w-100 hero-glass rounded-2 h-75">
         <div class="container-fluid bg-white p-5 rounded-2 w-75">
           <div class="d-flex justify-content-between">
-            <h1>Reviews for</h1>
-            <h2>Overall rating</h2>
+            <h1 class="placeholder-wave">
+              Reviews for <span class="placeholder location-name"> Name</span>
+            </h1>
+            <h2 class="placeholder-wave">
+              Overall rating:
+              <span class="placeholder location-rating"> Rating </span>
+            </h2>
           </div>
           <div class="d-flex justify-content-between align-content-center">
             <a
@@ -111,13 +116,10 @@
           </div>
           <hr class="my-2" />
           <div class="list-group reviews">
-            <section
-              class="list-group-item"
-              aria-current="true"
-            >
+            <section class="list-group-item" aria-current="true">
               <div class="d-flex w-100 justify-content-between">
                 <h3 class="mb-1">Review Title</h3>
-                <small>Rating: </small>
+                <small class="mb-1">Rating: </small>
               </div>
               <p class="mb-1">
                 Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -128,8 +130,48 @@
               <div class="d-flex justify-content-between">
                 <small class="col">Posting date</small>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-primary like">Like | <small>1 Likes</small></button>
-                  <button type="button" class="btn btn-secondary dislike">Dislike | <small>0 Dislikes</small></button>
+                  <button type="button" class="btn btn-primary like">
+                    Like | <small>1 Likes</small>
+                  </button>
+                  <button type="button" class="btn btn-secondary dislike">
+                    Dislike | <small>0 Dislikes</small>
+                  </button>
+                </div>
+              </div>
+            </section>
+            <section
+              class="list-group-item placeholder-wave"
+              aria-current="true"
+            >
+              <div class="d-flex w-100 justify-content-between">
+                <h3 class="mb-1 placeholder">Review Title</h3>
+                <small class="mb-1 placeholder placeholder-xs">Rating: </small>
+              </div>
+              <div class="mb-1 placeholder pl">
+                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                Distinctio ad doloremque dicta, cum dolor sequi modi nihil
+                libero cumque delectus recusandae odit inventore aliquid
+                accusantium vuptas dolore accusamus possimus corporis?
+              </div>
+              <div class="d-flex justify-content-between">
+                <small class="col placeholder placeholder-xs col-1"
+                  >Posting date</small
+                >
+                <div class="btn-group placeholder-glow" role="group">
+                  <button
+                    type="button"
+                    class="btn btn-primary disabled placeholder placeholder-wave like"
+                    aria-disabled="true"
+                  >
+                    Like | <small class="placeholder">1 Likes</small>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary disabled placeholder placeholder-wave dislike"
+                    aria-disabled="true"
+                  >
+                    Dislike | <small class="placeholder">0 Dislikes</small>
+                  </button>
                 </div>
               </div>
             </section>
