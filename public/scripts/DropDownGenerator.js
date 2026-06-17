@@ -1,4 +1,16 @@
-export default function SearchAndDropDownGenerator(
+/**
+ * Generates Bootstrap v5 dropdown component.
+ * @param {*} dropDown HTML element that will contain the dropdown categories.
+ * @param {*} dropDownBtnName HTML element that will contian the name current categories selected.
+ * @param {*} categories list of Strings that represent categories to display.
+ * @param {*} initialCategory initial active category.
+ * @param {*} eventListenerFunctionsToExecute functions to execute on new dropdown selection.
+ * @param {*} executeEventListenerFunctionsOnInitialization boolean as to whether to execute
+ * functions passed in parameter above on initialization of generator.
+ * @param {*} prefix a String to add to each dropdown category. Optional parameter.
+ * @returns an Object with a function for getting the active category.
+ */
+export default function DropDownGenerator(
   dropDown,
   dropDownBtnName,
   categories,
@@ -11,7 +23,7 @@ export default function SearchAndDropDownGenerator(
     throw new Error(`@param categories must be a Object with keys represent categories and values represent a serializable
    collection of options to display in the datalist.`);
   }
-  if (!new Set(Object.keys(categories)).has(initialCategory)) {
+  if (!new Set(categories).has(initialCategory)) {
     throw new Error(
       `@param initialSearchCategory must be a key in @param categories!`,
     );
@@ -30,7 +42,7 @@ export default function SearchAndDropDownGenerator(
 
   function genDropDown() {
     dropDown.innerHTML = ``;
-    for (const category of Object.keys(categories)) {
+    for (const category of categories) {
       const btn = document.createElement("button");
       btn.classList.add("dropdown-item");
       btn.innerHTML =
