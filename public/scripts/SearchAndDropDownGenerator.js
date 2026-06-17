@@ -1,3 +1,4 @@
+import DropDownGenerator from "./DropDownGenerator.js";
 /**
  * Links a HTML datalist element with a Bootstrap v5 dropdown component.
  * @param {*} dropDown HTML element that will contain the dropdown categories.
@@ -28,10 +29,10 @@ export default function SearchAndDropDownGenerator(
     );
   }
   //TODO: Add error handling for html element params.
-  let searchType = initialSearchCategory;
+
   const gen = {};
 
-  function populateDataList() {
+  function populateDataList(searchType) {
     dataList.innerHTML = ``;
     for (const option of categories[searchType]) {
       const optn = document.createElement("option");
@@ -40,43 +41,26 @@ export default function SearchAndDropDownGenerator(
     }
   }
 
-  function genDropDown() {
-    dropDown.innerHTML = ``;
-    for (const category of Object.keys(categories)) {
-      const btn = document.createElement("button");
-      btn.classList.add("dropdown-item");
-      btn.innerHTML = `${prefix} ${category}`;
-      if (category === searchType) {
-        btn.classList.add("active");
-      }
-      dropDown.appendChild(btn);
-      btn.addEventListener("click", (event) => {
-        event.preventDefault();
-        if (!btn.classList.contains("active")) {
-          for (const element of dropDown.children) {
-            if (element.classList.contains("active")) {
-              element.classList.remove("active");
-            }
-          }
-          btn.classList.add("active");
-          searchType = btn.innerHTML.replace(`${prefix} `, "");
-          dropDownBtnName.innerHTML = btn.innerHTML;
-          populateDataList();
-        }
-      });
-    }
-  }
+  gen.populateDataList = populateDataList;
+
+  const dropDownGen = DropDownGenerator(
+    dropDown,
+    dropDownBtnName,
+    categories,
+    initialSearchCategory,
+    [gen.populateDataList],
+    prefix,
+  );
 
   /**
    * Returns the active search category.
    * @returns a String representing the active search category.
    */
   function getActiveSearchCategory() {
-    return searchType;
+    return dropDownGen.getActiveCategory();
   }
-
-  genDropDown();
-  populateDataList();
+  // genDropDown();
+  populateDataList(initialSearchCategory);
   gen.getActiveSearchCategory = getActiveSearchCategory;
   return gen;
 }
