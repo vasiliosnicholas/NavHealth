@@ -19,10 +19,6 @@ export default function DropDownGenerator(
   executeEventListenerFunctionsOnInitialization = true,
   prefix = undefined,
 ) {
-  if (typeof categories !== "object") {
-    throw new Error(`@param categories must be a Object with keys represent categories and values represent a serializable
-   collection of options to display in the datalist.`);
-  }
   if (!new Set(categories).has(initialCategory)) {
     throw new Error(
       `@param initialSearchCategory must be a key in @param categories!`,
