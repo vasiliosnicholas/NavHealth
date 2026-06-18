@@ -11,32 +11,29 @@ const CATEGORIES_URL = "/api/categories";
 const initialSearchCategory = `Services`;
 const categoryPrefix = `by`;
 
-async function init() {
-  try {
-    const response = await fetch(CATEGORIES_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to load categories (${response.status})`);
-    }
 
-    const categories = await response.json();
-    const mainSearchBarGen = SearchAndDropDownGenerator(
-      dropDown,
-      dropDownBtnName,
-      dataList,
-      categories,
-      initialSearchCategory,
-      categoryPrefix,
-    );
-
-    searchForm.addEventListener("submit", (event) => {
-      event.preventDefault();
-      window.location.href = `${SEARCH_URL}?searchType=${mainSearchBarGen.getActiveSearchCategory().toLowerCase()}&searchString=${searchBar.value.replace(/ /g, "_")}`;
-    });
-  } catch (error) {
-    console.error(error);
-    searchBar.disabled = true;
-    document.getElementById("submit-search").disabled = true;
+try {
+  const response = await fetch(CATEGORIES_URL);
+  if (!response.ok) {
+    throw new Error(`Failed to load categories (${response.status})`);
   }
-}
 
-init();
+  const categories = await response.json();
+  const mainSearchBarGen = SearchAndDropDownGenerator(
+    dropDown,
+    dropDownBtnName,
+    dataList,
+    categories,
+    initialSearchCategory,
+    categoryPrefix,
+  );
+
+  searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    window.location.href = `${SEARCH_URL}?searchType=${mainSearchBarGen.getActiveSearchCategory().toLowerCase()}&searchString=${searchBar.value.replace(/ /g, "_")}`;
+  });
+} catch (error) {
+  console.error(error);
+  searchBar.disabled = true;
+  document.getElementById("submit-search").disabled = true;
+}
