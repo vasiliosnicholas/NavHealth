@@ -4,15 +4,8 @@ const LOCATIONS_COLLECTION =
   process.env.MONGODB_LOCATIONS_COLLECTION ?? "locations";
 
 async function getDistinctTags(collection) {
-  const results = await collection
-    .aggregate([
-      { $unwind: "$tags" },
-      { $group: { _id: "$tags" } },
-      { $sort: { _id: 1 } },
-    ])
-    .toArray();
-
-  return results.map((entry) => entry._id);
+  const tags = await collection.distinct("tags");
+  return tags.sort((a, b) => a.localeCompare(b));
 }
 
 async function getDistinctLocations(collection) {
