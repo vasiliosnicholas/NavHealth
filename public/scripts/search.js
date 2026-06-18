@@ -30,6 +30,7 @@ const state = {
   results: [],
   searchOrigin: { ...DEFAULT_SEARCH_ORIGIN },
   selectedInsurances: new Set(),
+  selectedLocation: null,
 };
 
 const elements = {
@@ -122,30 +123,58 @@ function buildLocationsQuery() {
   return params;
 }
 
-function updateMap(results) {
-  const coords = results
-    .map((location) => location.address?.coordinates?.coordinates ?? null)
-    .filter(Boolean);
+function buildMapEmbedUrl(lat, lon, { lonPad = 0.08, latPad = 0.05 } = {}) {
+  const minLon = lon - lonPad;
+  const maxLon = lon + lonPad;
+  const minLat = lat - latPad;
+  const maxLat = lat + latPad;
+  return `https://www.openstreetmap.org/export/embed.html?bbox=${minLon}%2C${minLat}%2C${maxLon}%2C${maxLat}&layer=mapnik&marker=${lat}%2C${lon}`;
+}
 
-  if (coords.length === 0) {
-    const { lat, lon } = state.searchOrigin;
-    elements.resultsMap.src = `https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.08}%2C${lat - 0.05}%2C${lon + 0.08}%2C${lat + 0.05}&layer=mapnik&marker=${lat}%2C${lon}`;
+function getLocationCoordinates(location) {
+  return location?.address?.coordinates?.coordinates ?? null;
+}
+
+function updateMap() {
+  const selectedCoords = getLocationCoordinates(state.selectedLocation);
+  if (selectedCoords) {
+    const [lon, lat] = selectedCoords;
+    elements.resultsMap.src = buildMapEmbedUrl(lat, lon, {
+      lonPad: 0.03,
+      latPad: 0.02,
+    });
     return;
   }
 
-  const lats = coords.map(([, lat]) => lat);
-  const lons = coords.map(([lon]) => lon);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const minLon = Math.min(...lons);
-  const maxLon = Math.max(...lons);
-  const centerLat = (minLat + maxLat) / 2;
-  const centerLon = (minLon + maxLon) / 2;
-
-  elements.resultsMap.src = `https://www.openstreetmap.org/export/embed.html?bbox=${minLon - 0.03}%2C${minLat - 0.02}%2C${maxLon + 0.03}%2C${maxLat + 0.02}&layer=mapnik&marker=${centerLat}%2C${centerLon}`;
+  const { lat, lon } = state.searchOrigin;
+  elements.resultsMap.src = buildMapEmbedUrl(lat, lon);
 }
 
-function renderResultCard(location) {
+function updateSelectedCardStyles() {
+  for (const card of elements.resultsList.children) {
+    const isSelected =
+      card.dataset.locationIndex !== undefined &&
+      state.results[Number(card.dataset.locationIndex)] === state.selectedLocation;
+    card.classList.toggle("is-selected", isSelected);
+  }
+}
+
+function handleResultCardSelect(index) {
+  const location = state.results[index];
+  if (!location) {
+    return;
+  }
+
+  state.selectedLocation = location;
+  updateSelectedCardStyles();
+  
+  if (getLocationCoordinates(location)) {
+    return updateMap();
+  }
+  console.warn("Selected location has no coordinates; map unchanged.");
+}
+
+function renderResultCard(location, index) {
   const address = formatAddress(location.address);
   const category =
     LOCATION_TYPE_LABELS[location.locationType] ?? "Healthcare Location";
@@ -158,8 +187,11 @@ function renderResultCard(location) {
 
   const card = document.createElement("div");
   card.className = "result-card";
+  card.dataset.locationIndex = String(index);
+  card.setAttribute("role", "button");
+  card.setAttribute("tabindex", "0");
   card.innerHTML = `
-    <div class="result-thumb" aria-hidden="true">${getInitials(location.name)}</div>
+    <div class="result-thumb">${getInitials(location.name)}</div>
     <div class="result-body">
       <a class="result-title" href="${website}" target="_blank" rel="noopener noreferrer">${location.name}</a>
       <p class="result-category">${category}</p>
@@ -183,18 +215,19 @@ function renderResultCard(location) {
 
 function renderResults() {
   elements.resultsList.replaceChildren();
-  state.results.forEach((location) => {
-    elements.resultsList.appendChild(renderResultCard(location));
+  state.results.forEach((location, index) => {
+    elements.resultsList.appendChild(renderResultCard(location, index));
   });
 
   const countLabel = state.results.length === 1 ? "match" : "matches";
   elements.matchCount.textContent = `${state.results.length} ${countLabel} found`;
   elements.noResults.classList.toggle("d-none", state.results.length > 0);
-  updateMap(state.results);
+  updateMap();
 }
 
 async function fetchAndRenderResults() {
   elements.matchCount.textContent = "Searching...";
+  state.selectedLocation = null;
 
   try {
     const query = buildLocationsQuery();
@@ -303,6 +336,19 @@ function bindEvents(debouncedFetch) {
 
   document.querySelectorAll('input[name="location-type"]').forEach((input) => {
     input.addEventListener("change", debouncedFetch);
+  });
+
+  elements.resultsList.addEventListener("click", (event) => {
+    if (event.target.closest("a, button, input")) {
+      return;
+    }
+
+    const card = event.target.closest(".result-card");
+    if (!card?.dataset.locationIndex) {
+      return;
+    }
+
+    handleResultCardSelect(Number(card.dataset.locationIndex));
   });
 
   elements.useLocationBtn.addEventListener("click", () => {
