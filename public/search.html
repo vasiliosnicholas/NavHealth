@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search | NavHealth</title>
+  <meta name="author" content="Vasilios Nicholas, Aryan Yadav" />
+  <meta name="description" content="Search healthcare services on NavHealth" />
+  <link rel="icon" type="./image/x-icon" href="./images/NavHealth.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Basic&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="stylesheet" href="./styles/search.css" />
+</head>
+
+<body class="search-page d-flex flex-column min-vh-100">
+  <header>
+    <nav class="navbar navbar-expand bg-body-tertiary">
+      <div class="container-fluid justify-content-between">
+        <a class="navbar-brand fs-1 basic-regular" href="./index.html">
+          Nav<img src="./images/NavHealth.png" alt="" />Health</a>
+        <div class="navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="./index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Login/Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">List Your Business</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="search-main flex-fill">
+    <div class="container py-4">
+      <div class="row mb-4">
+        <div class="col">
+          <h2 class="search-heading mb-2">Welcome To NavHealth</h2>
+          <p class="search-subheading mb-0">
+            We connect you with the healthcare services that meet your specific
+            needs within minutes.
+          </p>
+        </div>
+      </div>
+
+      <div class="row g-4 search-content-row">
+        <div class="col-8 results-column">
+          <div class="search-toolbar d-flex flex-wrap align-items-center gap-3">
+            <form id="search-form" class="search-bar-form d-flex" role="search">
+              <input class="form-control search-bar" type="text" list="searchDatalistOptions" id="search-bar"
+                placeholder="Type to search..." />
+              <datalist id="searchDatalistOptions"></datalist>
+              <div class="btn-group">
+                <button type="submit" id="submit-search" class="btn btn-primary">
+                  Search
+                </button>
+                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                  data-bs-toggle="dropdown" id="search-dropdown-btn">
+                  <span id="search-dropdown-btn-name" class="sr-only">by Services</span>
+                </button>
+                <div id="search-dropdown" class="dropdown-menu"></div>
+              </div>
+            </form>
+            <p class="match-count mb-0 d-flex flex-grow-1" id="match-count">0 matches found</p>
+            <div class="sort-wrap">
+              <select id="sort-select" class="form-select sort-select">
+                <option value="distance">Distance</option>
+                <option value="name">Name</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="results-scroll">
+            <div id="results-list" class="results-list"></div>
+            <p id="no-results" class="no-results text-muted d-none">
+              No locations match your filters. Try adjusting your search or
+              distance.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-4 sidebar-column">
+          <div class="filter-panel">
+            <ul class="nav nav-tabs filter-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="location-tab" data-bs-toggle="tab"
+                  data-bs-target="#location-filters" type="button" role="tab">
+                  <span class="tab-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                      viewBox="0 0 16 16" aria-hidden="true">
+                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                    </svg>
+                  </span>
+                  Location
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="insurance-tab" data-bs-toggle="tab" data-bs-target="#insurance-filters"
+                  type="button" role="tab">
+                  <span class="tab-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+                      viewBox="0 0 24 28">
+                      <path
+                        d="M10.8166736,3.38954078 C11.2620442,3.0332817 11.6949826,2.62017821 12,2.20202636 C12.1741286,2.50952148 12.7378389,3.03324273 13.1830903,3.38950693 C14.4610097,4.41202355 15.987612,5.02862273 17.7515047,5.02881305 C19.514031,5.02900321 21.0300558,4.42734132 22.2907239,3.42869293 C22.5569232,3.21782103 22.7922764,3.00659862 22.9970285,2.8032156 L22.9960399,17.0348126 C22.9964882,19.4226656 20.9391875,21.8077217 17.4762728,24.0259149 C16.2387633,24.8186098 14.9099979,25.531925 13.5809736,26.1534718 C13.1157467,26.3710451 12.6840211,26.561468 12.2970989,26.7233081 C12.0663239,26.8198357 12,26.8538208 12,26.8538208 C12,26.8538208 11.8217519,26.7763443 11.6949823,26.7232827 C11.3082007,26.5613883 10.8766322,26.3709134 10.4115748,26.1532943 C9.08303478,25.531617 7.75475355,24.8182482 6.51769429,24.0256104 C3.05788437,21.8087596 1.00158453,19.4259269 0.99999989,17.0416516 L0.998240077,2.80091804 C1.20518646,3.00721661 1.44518346,3.22311404 1.71777469,3.43862743 C2.97354733,4.43145401 4.48663191,5.0293676 6.24889476,5.02881302 C8.0124149,5.02825805 9.53880745,4.41172651 10.8166736,3.38954078 Z M6.24858006,4.02881307 C4.72792837,4.02929162 3.42709092,3.51525003 2.33796802,2.65417843 C1.95555331,2.35183749 1.62768686,2.02782518 1.35539298,1.70491943 C1.1950345,1.51475475 1.09108118,1.37093609 1.04414638,1.29672722 C0.69395357,0.806630067 0.0040673483,0.970514762 0.00390976599,1.59317335 L1.60123363e-08,17.0418574 C0.00187980131,19.870535 2.25604412,22.4826524 5.97819654,24.8675975 C7.25586385,25.6862546 8.62193251,26.4199175 9.98774236,27.0590349 C10.4657074,27.282694 10.9098026,27.4786977 11.3088731,27.6457357 C11.5496926,27.746535 11.7230132,27.8156586 11.8176551,27.8517681 L11.9958195,27.9197447 L12.1740023,27.8518163 C12.2686812,27.8157219 12.442068,27.7466243 12.6829788,27.6458572 C13.0821995,27.4788728 13.5264617,27.2829204 14.0046064,27.0593058 C15.3709293,26.4203156 16.7375111,25.6866995 18.015659,24.8679734 C21.7411769,22.481568 23.9965716,19.8668588 23.9960399,17.0348453 L23.9999499,1.59136436 C24.000095,1.01835544 23.341331,0.745622948 22.9843053,1.25938283 C22.9250807,1.35197866 22.8201458,1.49698564 22.6585193,1.68862925 C22.3841743,2.01392549 22.0542107,2.34030807 21.6697842,2.64483459 C20.5756632,3.5115514 19.2718908,4.02897708 17.7516126,4.02881305 C16.2330776,4.02864921 14.9193081,3.49801384 13.8078528,2.60869211 C13.4166903,2.29570662 13.0796235,1.96015013 12.7982769,1.62560502 C12.6323053,1.42825063 12.5239797,1.27866758 12.4744626,1.20088192 C12.2365616,0.855016034 11.7611058,0.853329692 11.5337123,1.18885963 C11.4763351,1.27857755 11.3679662,1.42816546 11.2019335,1.62552543 C10.9204838,1.96007959 10.5833029,2.29564529 10.1920185,2.60864002 C9.08054902,3.49772236 7.76687156,4.02833527 6.24858006,4.02881307 L6.24858006,4.02881307 Z"
+                        sketch:type="MSShapeGroup" />
+                      <path
+                        d="M13.5095215,9 L10.4904785,9 C10.2195947,9 10,9.2157526 10,9.49538898 L10,12 L7.49538898,12 C7.2217932,12 7,12.2150574 7,12.4904785 L7,15.5095215 C7,15.7804053 7.2157526,16 7.49538898,16 L10,16 L10,18.504611 C10,18.7782068 10.2150574,19 10.4904785,19 L13.5095215,19 C13.7804053,19 14,18.7842474 14,18.504611 L14,16 L16.504611,16 C16.7782068,16 17,15.7849426 17,15.5095215 L17,12.4904785 C17,12.2195947 16.7842474,12 16.504611,12 L14,12 L14,9.49538898 C14,9.2217932 13.7849426,9 13.5095215,9 Z M11,10 L11,12.504611 C11,12.7782068 10.7842474,13 10.504611,13 L8,13 L8,15 L10.504611,15 C10.7782068,15 11,15.2157526 11,15.495389 L11,18 L13,18 L13,15.495389 C13,15.2217932 13.2157526,15 13.495389,15 L16,15 L16,13 L13.495389,13 C13.2217932,13 13,12.7842474 13,12.504611 L13,10 L11,10 Z"
+                        sketch:type="MSShapeGroup" />
+                    </svg>
+                  </span>
+                  Insurance
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content filter-tab-content">
+              <div class="tab-pane fade show active" id="location-filters" role="tabpanel">
+                <fieldset class="mb-4">
+                  <legend class="filter-label">Location Type</legend>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location-type" id="type-urgent-care"
+                      value="urgent_care" checked />
+                    <label class="form-check-label" for="type-urgent-care">Urgent Care</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location-type" id="type-hospital"
+                      value="hospital_acute" />
+                    <label class="form-check-label" for="type-hospital">Hospital</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="location-type" id="type-private-practice"
+                      value="private_practice" />
+                    <label class="form-check-label" for="type-private-practice">Private Practice</label>
+                  </div>
+                </fieldset>
+
+                <div class="mb-4">
+                  <label class="filter-label" for="zip-code">Zip Code</label>
+                  <div class="zip-row d-flex gap-2 flex-wrap">
+                    <input id="zip-code" class="form-control zip-input" type="text" inputmode="numeric" maxlength="5"
+                      placeholder="02134" />
+                    <button type="button" class="btn btn-primary btn-location" id="use-location-btn">
+                      Use your Current Location
+                    </button>
+                  </div>
+                  <p class="location-status small text-muted mb-0 mt-2" id="location-status"></p>
+                </div>
+
+                <div>
+                  <label class="filter-label" for="distance-range">Distance</label>
+                  <p class="distance-label mb-2" id="distance-label">
+                    0 – 150 miles
+                  </p>
+                  <input id="distance-range" class="form-range" type="range" min="0" max="150" value="150" />
+                </div>
+              </div>
+
+              <div class="tab-pane fade" id="insurance-filters" role="tabpanel">
+                <p class="filter-label">Accepted Insurance</p>
+                <div id="insurance-checkboxes" class="insurance-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="map-panel mt-3">
+            <iframe id="results-map" class="results-map" title="Map of search results" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade" src="about:blank"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="container-fluid row bg-body-tertiary pt-3 mt-auto">
+    <span class="col">NavHealth</span>
+    <span class="col text-end">by Vasilios Nicholas and Aryan Yadav.</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script type="module" src="./scripts/search.js"></script>
+</body>
+
+</html>

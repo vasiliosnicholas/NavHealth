@@ -15,7 +15,7 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "start": "node node_modules/nodemon/bin/nodemon.js dev.js -e js,mjs,css,html,json",
+    "start": "node --env-file=.env node_modules/nodemon/bin/nodemon.js dev.js -e js,mjs,css,html,json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
@@ -32,7 +32,6 @@
     "prettier": "^3.8.4"
   },
   "dependencies": {
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongodb": "^7.3.0",
     "nodemon": "^3.1.14"

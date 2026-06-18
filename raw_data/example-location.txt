@@ -1,0 +1,30 @@
+{
+  "_id": {"$oid": "65f1a2b3c4d5e6f7a8b9c0d1"},
+  "name": "Express Care Urgent Clinic",
+  "address": {
+    "street": "123 Medical Plaza Way",
+    "city": "Boston",
+    "state": "MA",
+    "zipCode": "02115",
+    "coordinates": {
+      "type": "Point",
+      "coordinates": [-71.0932, 42.3398] 
+    }
+  },
+  "contactDetails": {
+    "phone": "617-555-0199",
+    "email": "info@expresscareboston.com"
+  },
+  "websiteLink": "https://www.expresscareboston.com",
+  "tags": [
+    "Offers Walk-ins",
+    "Offers Online Care",
+    "X-Rays Available",
+    "Pediatric Care"
+  ],
+  "insurances": [
+    "provider1",
+    "provider3",
+    <more-providers-here>
+  ]
+}

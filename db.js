@@ -1,5 +1,11 @@
-import "dotenv/config";
+import { loadEnvFile } from "node:process";
 import { MongoClient } from "mongodb";
+
+try {
+  loadEnvFile();
+} catch {
+  // .env is optional when variables are set elsewhere
+}
 
 function requireEnv(name) {
   const value = process.env[name];
@@ -23,6 +29,12 @@ export async function connectDb() {
   client = new MongoClient(MONGODB_URI);
   await client.connect();
   db = client.db(DB_NAME);
+
+  const collectionName =
+    process.env.MONGODB_LOCATIONS_COLLECTION ?? "locations";
+  await db
+    .collection(collectionName)
+    .createIndex({ "address.coordinates": "2dsphere" });
 
   return db;
 }
