@@ -56,7 +56,6 @@ export default function SearchAndDropDownGenerator(
     Object.keys(categories),
     initialSearchCategory,
     categoryChangeListeners,
-    [gen.populateDataList],
     true,
     prefix,
   );
