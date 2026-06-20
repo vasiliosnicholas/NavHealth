@@ -21,7 +21,7 @@
     />
     <link rel="stylesheet" href="./styles/main.css" />
   </head>
-  <body>
+  <body class="d-flex flex-column">
     <header class="">
       <nav class="navbar navbar-expand-lg bg-body-tertiary" aria-label="navbar">
         <div class="container-fluid justify-content-between">
@@ -73,12 +73,11 @@
     >
       <div class="container-fluid w-100 hero-glass rounded-2 h-75">
         <div class="container-fluid bg-white p-5 rounded-2 w-75">
-          <div class="d-flex justify-content-between">
-            <h1 class="placeholder-wave">
+          <div class="d-flex placeholder-wave justify-content-between">
+            <h1 class="placeholder description">
               Reviews for
-              <span class="placeholder rounded-2 location-name"> Name</span>
             </h1>
-            <h2 class="placeholder-wave">
+            <h2 class="placeholder-wave" id="average-rating">
               Overall rating:
               <span class="placeholder rounded-2 location-rating">
                 Rating
@@ -100,37 +99,16 @@
                 type="button"
                 aria-expanded="false"
               >
-                <span id="filter-dropdown-btn-name" class="sr-only">Most Recent</span>
+                <span id="filter-dropdown-btn-name" class="sr-only"
+                  >Most Recent</span
+                >
               </button>
 
               <ul id="dropdown-filter" class="dropdown-menu"></ul>
             </div>
           </div>
           <hr class="my-2" />
-          <div class="list-group reviews">
-            <section class="list-group-item" aria-current="true">
-              <div class="d-flex w-100 justify-content-between">
-                <h3 class="mb-1">Review Title</h3>
-                <small class="mb-1">Rating: </small>
-              </div>
-              <p class="mb-1">
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                Distinctio ad doloremque dicta, cum dolor sequi modi nihil
-                libero cumque delectus recusandae odit inventore aliquid
-                accusantium voluptas dolore accusamus possimus corporis?
-              </p>
-              <div class="d-flex justify-content-between">
-                <small class="col">Posting date</small>
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-primary like">
-                    Like | <small>1 Likes</small>
-                  </button>
-                  <button type="button" class="btn btn-secondary dislike">
-                    Dislike | <small>0 Dislikes</small>
-                  </button>
-                </div>
-              </div>
-            </section>
+          <div class="list-group" id="reviews">
             <section
               class="list-group-item placeholder-wave"
               aria-current="true"
@@ -171,17 +149,7 @@
               </div>
             </section>
           </div>
-          <nav aria-label="...">
-            <ul class="pagination justify-content-center mt-auto fixed-bottom">
-              <li class="page-item">
-                <a href="#" class="page-link">Previous</a>
-              </li>
-              <li class="page-item active">
-                <a class="page-link" href="#" aria-current="page">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-          </nav>
+
         </div>
       </div>
     </main>
