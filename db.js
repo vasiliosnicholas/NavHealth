@@ -39,6 +39,10 @@ export async function connectDb() {
   return db;
 }
 
+export function isConnected() {
+  return !!db;
+}
+
 export function getDb() {
   if (!db) {
     throw new Error("Database not connected.");
