@@ -3,6 +3,7 @@ import { connectDb } from "./db.js";
 import { getCategories } from "./routes/categories.js";
 import { getInsurances } from "./routes/insurances.js";
 import { getLocations } from "./routes/locations.js";
+import reviewsRouter from "./routes/ReviewsRouter.js";
 
 const app = {};
 
@@ -18,6 +19,7 @@ app.run = async () => {
   app.server.get("/api/insurances", getInsurances);
   app.server.get("/api/locations", getLocations);
   app.server.use(express.static("public"));
+  app.server.use("/api/Reviews/", reviewsRouter);
 
   app.server.listen(PORT, HOST, () => {
     console.log(`NavHealth server running on http://${HOST}:${PORT}`);
