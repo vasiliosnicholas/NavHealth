@@ -197,8 +197,8 @@ function renderResultCard(location, index) {
   //TODO: Add hours to database
   const hours =
     location.locationType === "urgent_care" ? URGENT_CARE_HOURS : "Hours vary";
-  const reviewsMetaData = state.reviewsMetaData[index];
-  const reviews_full_url = `${REVIEWS_BASE_URL}?business_id=${location._id}`;
+  const reviewsMetaData = state.reviewsMetaData[location._id];
+  const reviews_full_url = `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`;
   const card = document.createElement("div");
   card.className = "result-card";
   card.dataset.locationIndex = String(index);
@@ -252,6 +252,14 @@ async function reviewsMetaDataQueryBuilder() {
   return urlParams;
 }
 
+async function parseReviewsMetaData(reviewsMetaData) {
+  state.reviewsMetaData = {};
+  reviewsMetaData.forEach(
+    (reviewDocument, index) =>
+      (state.reviewsMetaData[reviewDocument.business_id] = reviewDocument),
+  );
+}
+
 async function fetchAndRenderResults() {
   elements.matchCount.textContent = "Searching...";
   state.selectedLocation = null;
@@ -272,7 +280,7 @@ async function fetchAndRenderResults() {
     if (!reviewsResponse.ok) {
       throw new Error(`Failed to load reviews (${reviewsResponse.status})`);
     }
-    state.reviewsMetaData = await reviewsResponse.json();
+    await parseReviewsMetaData(await reviewsResponse.json());
 
     renderResults();
   } catch (error) {
