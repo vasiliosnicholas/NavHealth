@@ -1,5 +1,6 @@
 import SearchAndDropDownGenerator from "./SearchAndDropDownGenerator.js";
 
+const FLOAT_PRECISION = 1;
 const LOCATION_TYPE_LABELS = {
   urgent_care: "Urgent Care Center",
   hospital_acute: "Hospital",
@@ -24,6 +25,9 @@ const SEARCH_TYPE_TO_CATEGORY = {
   location: "Location",
 };
 
+const REVIEWS_BASE_URL = "reviews.html";
+const REVIEWS_METADATA_URL = "/api/Reviews/GetReviewsMetaData";
+
 let searchBarGen;
 
 const state = {
@@ -31,6 +35,7 @@ const state = {
   searchOrigin: { ...DEFAULT_SEARCH_ORIGIN },
   selectedInsurances: new Set(),
   selectedLocation: null,
+  reviewsMetaData: [],
 };
 
 const elements = {
@@ -74,8 +79,12 @@ function formatAddress(address) {
 
 function getInitials(name) {
   const words = name.trim().split(/\s+/).filter(Boolean);
-  const initial1 = words[0] ? words[0].substring(0, 1) : '';
-  const initial2 = words[1] ? words[1].substring(0, 1) : words[0] ? words[0].substring(1, 2) : '';
+  const initial1 = words[0] ? words[0].substring(0, 1) : "";
+  const initial2 = words[1]
+    ? words[1].substring(0, 1)
+    : words[0]
+      ? words[0].substring(1, 2)
+      : "";
   return (initial1 + initial2).toUpperCase();
 }
 
@@ -116,7 +125,10 @@ function buildLocationsQuery() {
 
   const searchString = encodeSearchString(elements.searchBar.value);
   if (searchString && searchBarGen) {
-    params.set("searchType", searchBarGen.getActiveSearchCategory().toLowerCase());
+    params.set(
+      "searchType",
+      searchBarGen.getActiveSearchCategory().toLowerCase(),
+    );
     params.set("searchString", searchString);
   }
 
@@ -154,7 +166,8 @@ function updateSelectedCardStyles() {
   for (const card of elements.resultsList.children) {
     const isSelected =
       card.dataset.locationIndex !== undefined &&
-      state.results[Number(card.dataset.locationIndex)] === state.selectedLocation;
+      state.results[Number(card.dataset.locationIndex)] ===
+        state.selectedLocation;
     card.classList.toggle("is-selected", isSelected);
   }
 }
@@ -167,7 +180,7 @@ function handleResultCardSelect(index) {
 
   state.selectedLocation = location;
   updateSelectedCardStyles();
-  
+
   if (getLocationCoordinates(location)) {
     return updateMap();
   }
@@ -184,7 +197,8 @@ function renderResultCard(location, index) {
   //TODO: Add hours to database
   const hours =
     location.locationType === "urgent_care" ? URGENT_CARE_HOURS : "Hours vary";
-
+  const reviewsMetaData = state.reviewsMetaData[index];
+  const reviews_full_url = `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`;
   const card = document.createElement("div");
   card.className = "result-card";
   card.dataset.locationIndex = String(index);
@@ -198,6 +212,7 @@ function renderResultCard(location, index) {
       <div class="result-badges">
         <span class="result-badge">${pinIcon()}${address}</span>
         <span class="result-badge">${clockIcon()}${hours}</span>
+        <a class="result-badge" style="text-decoration:none" href="${reviews_full_url}">Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)}</a>
       </div>
       <div class="result-tags">
         ${tags.map((tag) => `<span class="result-tag">${tag}</span>`).join("")}
@@ -208,6 +223,7 @@ function renderResultCard(location, index) {
         ${phoneIcon()} Call
       </a>
       <a class="btn btn-primary" href="${website}" target="_blank" rel="noopener noreferrer">Visit Website</a>
+      <a class ="btn btn-secondary" href="${reviews_full_url}"> View Reviews</a>
     </div>
   `;
   return card;
@@ -225,6 +241,17 @@ function renderResults() {
   updateMap();
 }
 
+async function reviewsMetaDataQueryBuilder() {
+  const urlParams = new URLSearchParams();
+  urlParams.set(
+    `business_ids`,
+    (await state.results)
+      .map((location) => location._id)
+      .reduce((str, id) => `${str}_${id}`),
+  );
+  return urlParams;
+}
+
 async function fetchAndRenderResults() {
   elements.matchCount.textContent = "Searching...";
   state.selectedLocation = null;
@@ -237,6 +264,16 @@ async function fetchAndRenderResults() {
     }
 
     state.results = await response.json();
+
+    const reviewsResponse = await fetch(
+      `${REVIEWS_METADATA_URL}?${await reviewsMetaDataQueryBuilder()}`,
+    );
+
+    if (!reviewsResponse.ok) {
+      throw new Error(`Failed to load reviews (${reviewsResponse.status})`);
+    }
+    state.reviewsMetaData = await reviewsResponse.json();
+
     renderResults();
   } catch (error) {
     elements.matchCount.textContent = "Unable to load results";
@@ -294,7 +331,10 @@ function updateDistanceLabel() {
 function initSearchBar(categories, onCategoryChange) {
   const searchParams = new URLSearchParams(window.location.search);
   // We use SEARCH_TYPE_TO_CATEGORY to only allow our accepted search types
-  const searchCategory = SEARCH_TYPE_TO_CATEGORY[searchParams.get("searchType")?.trim().toLowerCase()] ?? "Name";
+  const searchCategory =
+    SEARCH_TYPE_TO_CATEGORY[
+      searchParams.get("searchType")?.trim().toLowerCase()
+    ] ?? "Name";
   const searchString = searchParams.get("searchString")?.trim();
 
   searchBarGen = SearchAndDropDownGenerator(
@@ -364,7 +404,7 @@ function bindEvents(debouncedFetch) {
         setOrigin(
           position.coords.latitude,
           position.coords.longitude,
-          "your current location"
+          "your current location",
         );
       },
       () => {
@@ -372,7 +412,7 @@ function bindEvents(debouncedFetch) {
           "Unable to detect location. Using Boston, MA instead.";
         state.searchOrigin = { ...DEFAULT_SEARCH_ORIGIN };
         debouncedFetch();
-      }
+      },
     );
   });
 }
@@ -382,7 +422,9 @@ async function init() {
     const debouncedFetch = debounce(fetchAndRenderResults, DEBOUNCE_MS);
     const categoriesResponse = await fetch(CATEGORIES_URL);
     if (!categoriesResponse.ok) {
-      throw new Error(`Failed to load categories (${categoriesResponse.status})`);
+      throw new Error(
+        `Failed to load categories (${categoriesResponse.status})`,
+      );
     }
     const categories = await categoriesResponse.json();
     initSearchBar(categories, debouncedFetch);
