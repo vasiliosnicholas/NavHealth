@@ -87,7 +87,7 @@ function genReviews() {
     const dislikeButton = document.createElement("button");
     dislikeButton.className = "btn btn-secondary";
     dislikeButton.type = "button";
-    dislikeButton.innerHTML = `Disike | <small>${review.num_dislikes}</small>`;
+    dislikeButton.innerHTML = `Dislike | <small>${review.num_dislikes}</small>`;
     buttonContainer.appendChild(dislikeButton);
   }
 }
