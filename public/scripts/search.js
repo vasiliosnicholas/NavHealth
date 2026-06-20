@@ -198,7 +198,7 @@ function renderResultCard(location, index) {
   const hours =
     location.locationType === "urgent_care" ? URGENT_CARE_HOURS : "Hours vary";
   const reviewsMetaData = state.reviewsMetaData[index];
-  const reviews_full_url = `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`;
+  const reviews_full_url = `${REVIEWS_BASE_URL}?business_id=${location._id}`;
   const card = document.createElement("div");
   card.className = "result-card";
   card.dataset.locationIndex = String(index);
