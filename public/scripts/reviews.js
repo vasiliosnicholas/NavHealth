@@ -9,8 +9,7 @@ const POST_REVIEW_URL = "post-review.html";
 
 const dropDown = document.getElementById("dropdown-filter");
 const dropDownBtnName = document.getElementById("filter-dropdown-btn-name");
-
-let htmlElements = {};
+let reviewElements = {};
 
 function comparator(field, parser, flip = false) {
   return (r1, r2) => {
@@ -96,7 +95,7 @@ function genReviews() {
     const reviewSection = document.createElement("section");
     reviewSection.className = `list-group-item`;
     reviewsParentElement.appendChild(reviewSection);
-    htmlElements[review._id] = reviewSection;
+    reviewElements[review._id] = reviewSection;
     const reviewHeader = document.createElement("div");
     reviewHeader.className = `d-flex w-100 justify-content-between`;
     reviewSection.appendChild(reviewHeader);
@@ -197,7 +196,7 @@ function genReviews() {
 
 function updateReviews() {
   for (const review of reviewsDocument.reviews) {
-    reviewsParentElement.appendChild(htmlElements[review._id]);
+    reviewsParentElement.appendChild(reviewElements[review._id]);
   }
 }
 

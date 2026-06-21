@@ -20,6 +20,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/main.css" />
+    <link rel="stylesheet" href="./styles/search.css" />
+    <link rel="stylesheet" href="./styles/reviews.css" />
   </head>
   <body class="d-flex flex-column align-content-center justify-content-center">
     <header class="">
@@ -54,7 +56,9 @@
                 >
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="search.html?admin=true">Manage Listings</a>
+                <a class="nav-link" href="search.html?admin=true"
+                  >Manage Listings</a
+                >
               </li>
               <li class="nav-item">
                 <a class="nav-link active description" href="#">Reviews</a>
@@ -71,7 +75,7 @@
     <main
       class="d-flex flex-column flex-fill justify-content-center align-items-center bg-secondary add-background min-vh-100"
     >
-      <div class="container-fluid w-100 hero-glass rounded-2 h-75">
+      <div class="container-fluid w-100 hero-glass rounded-2">
         <div class="container-fluid bg-white p-4 rounded-2 w-75 mb-5 shadow-lg">
           <div
             class="d-flex flex-column placeholder-wave justify-content-start align-items-between"
@@ -86,7 +90,9 @@
           </div>
         </div>
 
-        <div class="container-fluid bg-white p-5 rounded-2 w-75 shadow-lg">
+        <div
+          class="container-fluid bg-white p-5 rounded-2 w-75 shadow-lg justify-items-center"
+        >
           <div class="d-flex justify-content-between align-content-center">
             <a
               href="post-review.html"
@@ -112,10 +118,7 @@
             </div>
           </div>
           <hr class="my-2" />
-          <div
-            class="list-group d-flex flex-wrap results-scroll"
-            id="reviews"
-          >
+          <div class="list-group overflow-auto results-scroll" id="reviews">
             <section
               class="list-group-item placeholder-wave"
               aria-current="true"
@@ -155,6 +158,17 @@
                 </div>
               </div>
             </section>
+          </div>
+          <hr class="my-2" />
+          <div class="container row justify-content-center justify-items-center mt-3">
+            <button
+              type="button"
+              class="col-3 col-lg-2 btn btn-primary "
+              id="back-to-search"
+              onclick="history.back()"
+            >
+              Back to Search
+            </button>
           </div>
         </div>
       </div>
