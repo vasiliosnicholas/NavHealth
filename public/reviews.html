@@ -69,14 +69,14 @@
     </header>
 
     <main
-      class="d-flex flex-column flex-fill justify-content-center align-content-center bg-secondary add-background min-vh-100"
+      class="d-flex flex-column flex-fill justify-content-center align-items-center bg-secondary add-background min-vh-100"
     >
       <div class="container-fluid w-100 hero-glass rounded-2 h-75">
-        <div class="container-fluid bg-white p-5 rounded-2 w-75">
-          <div class="d-flex placeholder-wave justify-content-between">
-            <h1 class="placeholder rounded-2 description">
-              Reviews for
-            </h1>
+        <div class="container-fluid bg-white p-4 rounded-2 w-75 mb-5 shadow-lg">
+          <div
+            class="d-flex flex-column placeholder-wave justify-content-start align-items-between"
+          >
+            <h1 class="placeholder rounded-2 description">Reviews for</h1>
             <h2 class="placeholder-wave" id="average-rating">
               Overall rating:
               <span class="placeholder rounded-2 location-rating">
@@ -84,10 +84,14 @@
               </span>
             </h2>
           </div>
+        </div>
+
+        <div class="container-fluid bg-white p-5 rounded-2 w-75 shadow-lg">
           <div class="d-flex justify-content-between align-content-center">
             <a
               href="post-review.html"
               class="btn btn-primary text-center text-md-center"
+              id="post-review"
               >Post Review</a
             >
 
@@ -108,7 +112,10 @@
             </div>
           </div>
           <hr class="my-2" />
-          <div class="list-group" id="reviews">
+          <div
+            class="list-group d-flex flex-wrap results-scroll"
+            id="reviews"
+          >
             <section
               class="list-group-item placeholder-wave"
               aria-current="true"
@@ -149,7 +156,6 @@
               </div>
             </section>
           </div>
-
         </div>
       </div>
     </main>
