@@ -41,3 +41,10 @@ export function getReviewsMetaData(query) {
     .project({ business_id: 1, num_reviews: 1, average_rating: 1 })
     .toArray();
 }
+
+export function updateReviewMetaData() {}
+
+export function updateReview(query, update, options = undefined) {
+  parseObjectId(query);
+  reviewsCollection.updateOne(query, update, options);
+}
