@@ -1,5 +1,8 @@
 import express from "express";
-import { getReviews, getReviewsMetaData } from "../data/reviewsCollectionOperations.js";
+import {
+  getReviews,
+  getReviewsMetaData,
+} from "../data/reviewsCollectionOperations.js";
 
 const reviewsRouter = express.Router();
 
@@ -13,14 +16,17 @@ reviewsRouter.get("/GetReviews/", async (req, res) => {
      * only for a specific business.
      */
     res.status(501).send("You must request reviews for a specific business!");
-  }
-  const query = business_id ? { business_id: business_id } : { _id: review_id };
-  try {
-    const reviews = await getReviews(query);
-    res.json(reviews);
-  } catch (error) {
-    console.error("Error fetching reviews: ", error);
-    res.status(500).send("Error fetching reviews!");
+  } else {
+    const query = business_id
+      ? { business_id: business_id }
+      : { _id: review_id };
+    try {
+      const reviews = await getReviews(query);
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching reviews: ", error);
+      res.status(500).send("Error fetching reviews!");
+    }
   }
 });
 
@@ -33,14 +39,15 @@ reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
      * only for a specific business.
      */
     res.status(501).send("You must request reviews for a specific business!");
-  }
-  const query = { business_id: { $in: business_ids.split("_") } };
-  try {
-    const reviews = await getReviewsMetaData(query);
-    res.json(reviews);
-  } catch (error) {
-    console.error("Error fetching reviews metadata: ", error);
-    res.status(500).send("Error fetching reviews metadata!");
+  } else {
+    const query = { business_id: { $in: business_ids.split("_") } };
+    try {
+      const reviews = await getReviewsMetaData(query);
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching reviews metadata: ", error);
+      res.status(500).send("Error fetching reviews metadata!");
+    }
   }
 });
 
@@ -48,6 +55,18 @@ reviewsRouter.post("/CreateReview/", async (req, res) => {});
 
 reviewsRouter.delete("/DeleteReview/", async (req, res) => {});
 
-reviewsRouter.put("/UpdateReview/", async (req, res) => {});
+reviewsRouter.put("/UpdateReview/", async (req, res) => {
+  const id = req.query.id;
+  const review_id = req.query.review_id;
+  if (!id && !review_id) {
+    res
+      .status(500)
+      .send("You must pass a reviews document id along with a review id!");
+  }
+  const field = req.query.field;
+  const operation = req.query.operation;
+  const options = req.query.options;
+  const update = {};
+});
 
 export default reviewsRouter;

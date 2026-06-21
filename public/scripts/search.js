@@ -234,7 +234,9 @@ function renderResultCard(location, index) {
   //TODO: Add hours to database
   const hours =
     location.locationType === "urgent_care" ? URGENT_CARE_HOURS : "Hours vary";
-  const reviewsMetaData = state.reviewsMetaData[location._id];
+  const reviewsMetaData = state.reviewsMetaData
+    ? state.reviewsMetaData[location._id]
+    : undefined;
   const reviewsFullUrl = reviewsMetaData
     ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
     : null;
@@ -242,7 +244,9 @@ function renderResultCard(location, index) {
     !isAdminMode && reviewsMetaData
       ? `<a class="result-badge" style="text-decoration:none" href="${reviewsFullUrl}">Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)}</a>`
       : "";
-  const adminContactBadges = isAdminMode ? renderAdminContactBadges(location) : "";
+  const adminContactBadges = isAdminMode
+    ? renderAdminContactBadges(location)
+    : "";
   const actionsHtml = isAdminMode
     ? renderAdminActions(location)
     : renderNormalActions(location, reviewsMetaData);
@@ -287,12 +291,14 @@ function renderResults() {
 
 async function reviewsMetaDataQueryBuilder() {
   const urlParams = new URLSearchParams();
-  urlParams.set(
-    `business_ids`,
-    (await state.results)
-      .map((location) => location._id)
-      .reduce((str, id) => `${str}_${id}`),
-  );
+  if ((await state.results.length) > 0) {
+    urlParams.set(
+      `business_ids`,
+      (await state.results)
+        .map((location) => location._id)
+        .reduce((str, id) => `${str}_${id}`),
+    );
+  }
   return urlParams;
 }
 
@@ -418,7 +424,9 @@ function setOrigin(lat, lon, label) {
 
 async function deleteLocation(locationId, index, locationName) {
   if (
-    !window.confirm(`Delete "${locationName}" and all associated reviews? This cannot be undone.`)
+    !window.confirm(
+      `Delete "${locationName}" and all associated reviews? This cannot be undone.`,
+    )
   ) {
     return;
   }
@@ -527,10 +535,12 @@ async function init() {
     bindEvents(debouncedFetch);
     elements.locationStatus.textContent = `Searching near ${state.searchOrigin.label}.`;
     if (isAdminMode) {
-      elements.searchForm.querySelector(".btn-group")?.insertAdjacentHTML(
-        "afterend",
-        '<span class="btn btn-warning text-dark admin-mode-badge">Admin</span>',
-      );
+      elements.searchForm
+        .querySelector(".btn-group")
+        ?.insertAdjacentHTML(
+          "afterend",
+          '<span class="btn btn-warning text-dark admin-mode-badge">Admin</span>',
+        );
     }
     await fetchAndRenderResults();
   } catch (error) {
