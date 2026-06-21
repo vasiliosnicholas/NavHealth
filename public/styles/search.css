@@ -88,6 +88,11 @@
   white-space: nowrap;
 }
 
+.admin-mode-badge {
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
 .sort-select {
   min-width: 8.5rem;
   background-color: #ffffff;

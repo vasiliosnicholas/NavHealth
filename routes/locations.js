@@ -1,7 +1,10 @@
+import { ObjectId } from "mongodb";
 import { getDb } from "../db.js";
 
 const LOCATIONS_COLLECTION =
   process.env.MONGODB_LOCATIONS_COLLECTION ?? "locations";
+const REVIEWS_COLLECTION =
+  process.env.MONGODB_REVIEWS_COLLECTION ?? "reviews";
 
 function decodeSearchString(value) {
   return value.replace(/_/g, " ");
@@ -52,7 +55,7 @@ function applyRequestFilter(filter, searchType, searchString) {
       filter.tags = decoded;
       break;
     case "name":
-      filter.name = decoded;
+      filter.name = { $regex: decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
       break;
     case "location": {
       const [city, state] = decoded.split(",").map((part) => part.trim());
@@ -126,5 +129,33 @@ export async function getLocations(req, res) {
   } catch (error) {
     console.error("Failed to load locations:", error);
     res.status(500).json({ error: "Failed to load locations" });
+  }
+}
+
+export async function deleteLocation(req, res) {
+  try {
+    const { id } = req.params;
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid location id" });
+    }
+
+    const objectId = new ObjectId(id);
+    const db = getDb();
+    const deleteResult = await db
+      .collection(LOCATIONS_COLLECTION)
+      .deleteOne({ _id: objectId });
+
+    if (deleteResult.deletedCount === 0) {
+      return res.status(404).json({ error: "Location not found" });
+    }
+
+    await db
+      .collection(REVIEWS_COLLECTION)
+      .deleteMany({ business_id: objectId });
+
+    res.status(204).send();
+  } catch (error) {
+    console.error("Failed to delete location:", error);
+    res.status(500).json({ error: "Failed to delete location" });
   }
 }
