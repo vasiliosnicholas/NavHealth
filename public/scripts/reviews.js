@@ -49,7 +49,7 @@ const categoryPrefix = undefined;
 let reviewsDocument = undefined;
 let params = undefined;
 
-export function singletonAction(action, reverseAction = undefined) {
+export function toggleAction(action, reverseAction = undefined) {
   let hasRun = false;
 
   function reset() {
@@ -62,6 +62,7 @@ export function singletonAction(action, reverseAction = undefined) {
       hasRun = true;
       return true;
     }
+    reset();
     return false;
   }
   return { reset, run };
@@ -135,7 +136,7 @@ function genReviews() {
     likeButtonUpdate(likeButton, review);
     buttonContainer.appendChild(likeButton);
 
-    const likeAction = singletonAction(
+    const likeAction = toggleAction(
       () => {
         review.num_likes = parseInt(review.num_likes) + 1;
         likeButtonUpdate(likeButton, review);
@@ -167,7 +168,7 @@ function genReviews() {
     dislikeButtonUpdate(dislikeButton, review);
     buttonContainer.appendChild(dislikeButton);
 
-    const dislikeAction = singletonAction(
+    const dislikeAction = toggleAction(
       () => {
         review.num_dislikes = parseInt(review.num_dislikes) + 1;
         dislikeButtonUpdate(dislikeButton, review);
