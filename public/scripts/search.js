@@ -290,8 +290,9 @@ function renderResults() {
 }
 
 async function reviewsMetaDataQueryBuilder() {
-  const urlParams = new URLSearchParams();
+  let urlParams = undefined;
   if ((await state.results.length) > 0) {
+    urlParams = new URLSearchParams();
     urlParams.set(
       `business_ids`,
       (await state.results)
@@ -322,10 +323,10 @@ async function fetchAndRenderResults() {
     }
 
     state.results = await response.json();
-
-    if (!isAdminMode) {
+    const reviewsQuery = await reviewsMetaDataQueryBuilder();
+    if (!isAdminMode && reviewsQuery) {
       const reviewsResponse = await fetch(
-        `${REVIEWS_METADATA_URL}?${await reviewsMetaDataQueryBuilder()}`,
+        `${REVIEWS_METADATA_URL}?${reviewsQuery}`,
       );
 
       if (!reviewsResponse.ok) {
