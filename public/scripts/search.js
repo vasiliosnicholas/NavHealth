@@ -173,7 +173,7 @@ function updateSelectedCardStyles() {
     const isSelected =
       card.dataset.locationIndex !== undefined &&
       state.results[Number(card.dataset.locationIndex)] ===
-        state.selectedLocation;
+      state.selectedLocation;
     card.classList.toggle("is-selected", isSelected);
   }
 }
@@ -196,7 +196,7 @@ function handleResultCardSelect(index) {
 function renderAdminActions(location) {
   return `
     <button type="button" class="btn btn-danger btn-delete" data-location-id="${location._id}">Delete</button>
-    <button type="button" class="btn btn-outline-secondary" disabled>Edit</button>
+    <a class="btn btn-outline-secondary" href="add-location.html?edit=true&id=${location._id}">Edit</a>
   `;
 }
 
@@ -397,7 +397,7 @@ function initSearchBar(categories, onCategoryChange) {
   // We use SEARCH_TYPE_TO_CATEGORY to only allow our accepted search types
   const searchCategory =
     SEARCH_TYPE_TO_CATEGORY[
-      searchParams.get("searchType")?.trim().toLowerCase()
+    searchParams.get("searchType")?.trim().toLowerCase()
     ] ?? "Name";
   const searchString = searchParams.get("searchString")?.trim();
 

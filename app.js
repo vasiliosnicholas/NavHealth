@@ -2,7 +2,13 @@ import express from "express";
 import { connectDb } from "./db.js";
 import { getCategories } from "./routes/categories.js";
 import { getInsurances } from "./routes/insurances.js";
-import { createLocation, deleteLocation, getLocations } from "./routes/locations.js";
+import {
+  createLocation,
+  deleteLocation,
+  getLocationById,
+  getLocations,
+  updateLocation,
+} from "./routes/locations.js";
 import reviewsRouter from "./routes/ReviewsRouter.js";
 
 const app = {};
@@ -20,7 +26,9 @@ app.run = async () => {
   app.server.get("/api/categories", getCategories);
   app.server.get("/api/insurances", getInsurances);
   app.server.get("/api/locations", getLocations);
+  app.server.get("/api/locations/:id", getLocationById);
   app.server.post("/api/locations", createLocation);
+  app.server.put("/api/locations/:id", updateLocation);
   app.server.delete("/api/locations/:id", deleteLocation);
   app.server.use(express.static("public"));
   app.server.use("/api/Reviews/", reviewsRouter);
