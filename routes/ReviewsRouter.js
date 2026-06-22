@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  deleteReview,
   getReviews,
   getReviewsMetaData,
   updateReview,
@@ -56,12 +57,43 @@ reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
 
 reviewsRouter.post("/CreateReview/", async (req, res) => {});
 
-reviewsRouter.delete("/DeleteReviews/", async (req, res) => {});
+reviewsRouter.post("/CreateNewReviewsDoucment", async (req, res) => {});
 
-reviewsRouter.delete("/DeleteReview/", async (req, res) => {});
+reviewsRouter.delete("/DeleteReviewsDocument/", async (req, res) => {});
+
+reviewsRouter.delete("/DeleteReview/", async (req, res) => {
+  const review_id = req.query.review_id;
+  if (!review_id) {
+    res.status(500).send("You must pass a review id to delete a review!");
+  }
+  const query = { "reviews._id": review_id };
+  const deleteQuery = { _id: review_id };
+  try {
+    deleteReview(query, deleteQuery);
+    res.send(`Deleted ${review_id}`);
+  } catch (error) {
+    console.error(`Error deleting review ${review_id}:`, error);
+    res.error(500).send(`Error deleting review ${review_id}:`, error);
+  }
+});
+
+reviewsRouter.put("/UpdateReviewsMetaData/", async (req, res) => {
+  const business_id = req.query.business_id;
+  const review_id = req.query.id;
+  if (!business_id && !review_id) {
+    /**
+     * TODO: using HTTP respone code for not implemented for now.
+     * Don't want to accept query to get all documents in reviews collection,
+     * only for a specific business.
+     */
+    res.status(501).send("You must request reviews for a specific business!");
+  } else {
+    const query = business_id
+      ? { business_id: business_id }
+      : { _id: review_id };
+});
 
 reviewsRouter.put("/UpdateReview/", async (req, res) => {
-  console.log("reached");
   const review_id = req.query.review_id;
   const field = req.query.field;
   const operation = req.query.operation;
@@ -72,7 +104,6 @@ reviewsRouter.put("/UpdateReview/", async (req, res) => {
       .send(
         "You must pass a review id, an operation, a field and a value to update the field to!",
       );
-    console.error("fail");
   } else if (!UPDATE_OPERATIONS.has(operation)) {
     res
       .status(500)
@@ -80,7 +111,6 @@ reviewsRouter.put("/UpdateReview/", async (req, res) => {
         "Operation must be one of the following operations:",
         UPDATE_OPERATIONS,
       );
-    console.error("fail 2", operation);
   } else {
     try {
       if (operation === "$inc") {
@@ -93,7 +123,8 @@ reviewsRouter.put("/UpdateReview/", async (req, res) => {
       updateReview(query, update);
       res.send(`${field} for review ${review_id} updated`);
     } catch (error) {
-      console.error("Error updating review field: ", error);
+      res.error(500).send(`Error updating ${field} for ${review_id}:`, error);
+      console.error(`Error updating ${field} for ${review_id}:`, error);
     }
   }
 });

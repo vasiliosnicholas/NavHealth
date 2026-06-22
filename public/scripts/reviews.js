@@ -5,13 +5,16 @@ const reviewsParentElement = document.getElementById("reviews");
 const postReviewButton = document.getElementById("post-review");
 const thumbnail = document.querySelector(".result-thumb");
 const ratingElement = document.getElementById("average-rating");
+const dropDown = document.getElementById("dropdown-filter");
+const dropDownBtnName = document.getElementById("filter-dropdown-btn-name");
+const adminAnchor = document.querySelector(".admin");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
 const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
+const DELETE_REVIEW_URL = "/api/Reviews/DeleteReview";
 const POST_REVIEW_URL = "post-review.html";
+const REVIEWS_URL = "reviews.html";
 
-const dropDown = document.getElementById("dropdown-filter");
-const dropDownBtnName = document.getElementById("filter-dropdown-btn-name");
 let reviewElements = {};
 
 function getInitials(name) {
@@ -83,7 +86,7 @@ export function toggleAction(action, reverseAction = undefined) {
 
 async function getReviews() {
   params = new URLSearchParams(window.location.search);
-  const response = await fetch(`${GET_REVIEWS_URL}?${params}`);
+  const response = await fetch(`${GET_REVIEWS_URL}?id=${params.get("id")}`);
 
   if (!response.ok) {
     console.error(
@@ -112,6 +115,14 @@ async function updateReview(review_id, operation, field, value) {
   return await fetch(`${UPDATE_REVIEW_URL}?${updateParams}`, { method: "PUT" });
 }
 
+async function deleteReview(review_id) {
+  const deleteParams = new URLSearchParams();
+  deleteParams.set("review_id", review_id);
+  return await fetch(`${DELETE_REVIEW_URL}?${deleteParams}`, {
+    method: "DELETE",
+  });
+}
+
 function genReviews() {
   ratingElement.innerHTML = `Overall Rating: ${parseFloat(reviewsDocument.average_rating).toFixed(1)}`;
   for (const description of descriptions) {
@@ -130,7 +141,8 @@ function genReviews() {
   }
   thumbnail.innerHTML = getInitials(reviewsDocument.business_name);
   thumbnail.classList.remove("placeholder");
-  reviewsParentElement.innerHTML = ``;
+  reviewsParentElement.innerHTML =
+    reviewsDocument.reviews.length > 0 ? `` : "No reviews found";
   for (const review of reviewsDocument.reviews) {
     const reviewSection = document.createElement("section");
     reviewSection.className = `list-group-item`;
@@ -169,70 +181,109 @@ function genReviews() {
     buttonContainer.role = "group";
     reviewFooter.appendChild(buttonContainer);
 
-    const likeButton = document.createElement("button");
-    likeButton.className = "btn btn-primary";
-    likeButton.type = "button";
-    likeButtonUpdate(likeButton, review);
-    buttonContainer.appendChild(likeButton);
+    if (!params.has("admin")) {
+      const likeButton = document.createElement("button");
+      likeButton.className = "btn btn-primary";
+      likeButton.type = "button";
+      likeButtonUpdate(likeButton, review);
+      buttonContainer.appendChild(likeButton);
 
-    const likeAction = toggleAction(
-      async () => {
-        review.num_likes = parseInt(review.num_likes) + 1;
-        likeButtonUpdate(likeButton, review);
-        try {
-          dislikeAction.reset();
-          //TODO: Add Post request here.
-          console.log(await updateReview(review._id, "$inc", "num_likes", 1));
-        } catch (error) {
-          console.error("Error processing like update", error);
-        }
-      },
-      async () => {
-        review.num_likes = parseInt(review.num_likes) - 1;
-        likeButtonUpdate(likeButton, review);
-        try {
-          await updateReview(review._id, "$inc", "num_likes", -1);
-        } catch (error) {
-          console.error("Error processing like reversal update", error);
-        }
-      },
-    );
+      const likeAction = toggleAction(
+        async () => {
+          review.num_likes = parseInt(review.num_likes) + 1;
+          likeButtonUpdate(likeButton, review);
+          try {
+            dislikeAction.reset();
+            //TODO: Add Post request here.
+            await updateReview(review._id, "$inc", "num_likes", 1);
+          } catch (error) {
+            console.error("Error processing like update", error);
+          }
+        },
+        async () => {
+          review.num_likes = parseInt(review.num_likes) - 1;
+          likeButtonUpdate(likeButton, review);
+          try {
+            await updateReview(review._id, "$inc", "num_likes", -1);
+          } catch (error) {
+            console.error("Error processing like reversal update", error);
+          }
+        },
+      );
 
-    likeButton.addEventListener("click", () => {
-      likeAction.run();
-    });
+      likeButton.addEventListener("click", () => {
+        likeAction.run();
+      });
 
-    const dislikeButton = document.createElement("button");
-    dislikeButton.className = "btn btn-secondary";
-    dislikeButton.type = "button";
-    dislikeButtonUpdate(dislikeButton, review);
-    buttonContainer.appendChild(dislikeButton);
+      const dislikeButton = document.createElement("button");
+      dislikeButton.className = "btn btn-secondary";
+      dislikeButton.type = "button";
+      dislikeButtonUpdate(dislikeButton, review);
+      buttonContainer.appendChild(dislikeButton);
 
-    const dislikeAction = toggleAction(
-      async () => {
-        review.num_dislikes = parseInt(review.num_dislikes) + 1;
-        dislikeButtonUpdate(dislikeButton, review);
-        try {
-          likeAction.reset();
-          await updateReview(review._id, "$inc", "num_dislikes", 1);
-        } catch (error) {
-          console.error("Error processing dislike update", error);
-        }
-      },
-      async () => {
-        review.num_dislikes = parseInt(review.num_dislikes) - 1;
-        dislikeButtonUpdate(dislikeButton, review);
-        try {
-          await updateReview(review._id, "$inc", "num_dislikes", -1);
-        } catch (error) {
-          console.error("Error processing like reversal update", error);
-        }
-      },
-    );
-    dislikeButton.addEventListener("click", () => {
-      dislikeAction.run();
-    });
+      const dislikeAction = toggleAction(
+        async () => {
+          review.num_dislikes = parseInt(review.num_dislikes) + 1;
+          dislikeButtonUpdate(dislikeButton, review);
+          try {
+            likeAction.reset();
+            await updateReview(review._id, "$inc", "num_dislikes", 1);
+          } catch (error) {
+            console.error("Error processing dislike update", error);
+          }
+        },
+        async () => {
+          review.num_dislikes = parseInt(review.num_dislikes) - 1;
+          dislikeButtonUpdate(dislikeButton, review);
+          try {
+            await updateReview(review._id, "$inc", "num_dislikes", -1);
+          } catch (error) {
+            console.error("Error processing like reversal update", error);
+          }
+        },
+      );
+      dislikeButton.addEventListener("click", () => {
+        dislikeAction.run();
+      });
+    } else {
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "btn btn-danger";
+      deleteButton.type = "button";
+      deleteButton.innerHTML = "Delete Review";
+      buttonContainer.appendChild(deleteButton);
+      deleteButton.addEventListener("click", async () => {
+        await deleteReview(review._id);
+        delete reviewsDocument[review._id];
+        delete reviewSection.remove();
+        console.log("deleted!");
+      });
+    }
   }
+}
+
+function handleAdmin() {
+  if (params.has("admin")) {
+    adminAnchor.innerHTML = "Stop Managing Reviews";
+    adminAnchor.classList.add("active");
+    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}`;
+  } else {
+    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}&admin`;
+  }
+}
+
+async function genElements() {
+  await getReviews();
+  genReviews();
+  handleAdmin();
+  const sort = DropDownGenerator(
+    dropDown,
+    dropDownBtnName,
+    Object.keys(categories),
+    Object.keys(categories)[0],
+    eventListenerFunctionsToExecute,
+    executeEventListenerFunctionsOnInitialization,
+    categoryPrefix,
+  );
 }
 
 function updateReviews() {
@@ -247,16 +298,4 @@ async function sortReviews(sortKey) {
   updateReviews();
 }
 
-await getReviews();
-
-genReviews();
-
-const sort = DropDownGenerator(
-  dropDown,
-  dropDownBtnName,
-  Object.keys(categories),
-  Object.keys(categories)[0],
-  eventListenerFunctionsToExecute,
-  executeEventListenerFunctionsOnInitialization,
-  categoryPrefix,
-);
+await genElements();
