@@ -38,3 +38,7 @@ main.add-background {
   max-width: 35rem;
   gap: 0.625rem;
 }
+
+.form-control::placeholder {
+  color: #949494;
+}

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>List Your Business | NavHealth</title>
+  <meta name="author" content="Vasilios Nicholas, Aryan Yadav" />
+  <meta name="description" content="Add a healthcare location to NavHealth" />
+  <link rel="icon" type="./image/x-icon" href="./images/NavHealth.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Basic&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles/main.css" />
+</head>
+
+<body>
+  <header class="">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid justify-content-between">
+        <a class="navbar-brand fs-1 basic-regular" href="index.html">
+          Nav<img class="" src="./images/NavHealth.png" alt="NavHealth Logo" />Health</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="search.html?admin=true">Manage Listings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#">List Your Business</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="d-flex flex-column flex-fill justify-content-center align-items-center add-background min-vh-100 py-4">
+    <div class="container-fluid w-100 hero-glass rounded-2 d-flex justify-content-center">
+      <div class="container-fluid bg-white p-5 rounded-2 w-75 mx-auto">
+        <form id="add-location-form">
+          <div class="d-flex justify-content-center text-center">
+            <h1>List Your Business</h1>
+          </div>
+          <hr class="my-2" />
+
+          <div class="d-flex justify-content-between gap-3">
+            <div class="mb-3 flex-fill">
+              <label for="location-name" class="form-label">Facility Name</label>
+              <input type="text" class="form-control" id="location-name" name="name" placeholder="Facility name"
+                required />
+            </div>
+            <div class="mb-3 flex-fill">
+              <label for="location-type" class="form-label">Location Type</label>
+              <select class="form-select" id="location-type" name="locationType" required>
+                <option value="urgent_care">Urgent Care</option>
+                <option value="hospital_acute">Hospital</option>
+                <option value="retail_clinic">Retail Clinic</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="street" class="form-label">Street</label>
+            <input type="text" class="form-control" id="street" name="street" placeholder="575 Boylston St" required />
+          </div>
+
+          <div class="d-flex justify-content-between gap-3">
+            <div class="mb-3 flex-fill">
+              <label for="city" class="form-label">City</label>
+              <input type="text" class="form-control" id="city" name="city" placeholder="Boston" required />
+            </div>
+            <div class="mb-3 flex-fill">
+              <label for="state" class="form-label">State</label>
+              <input type="text" class="form-control" id="state" name="state" placeholder="MA" maxlength="2" required />
+            </div>
+            <div class="mb-3 flex-fill">
+              <label for="zip-code" class="form-label">Zip Code</label>
+              <input type="text" class="form-control" id="zip-code" name="zipCode" placeholder="02116"
+                inputmode="numeric" maxlength="5" required />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between gap-3">
+            <div class="mb-3 flex-fill">
+              <label for="longitude" class="form-label">Longitude (Optional)</label>
+              <input type="number" class="form-control" id="longitude" name="longitude" step=""
+                placeholder="-71.0589" />
+            </div>
+            <div class="mb-3 flex-fill">
+              <label for="latitude" class="form-label">Latitude (Optional)</label>
+              <input type="number" class="form-control" id="latitude" name="latitude" step="any"
+                placeholder="42.3601" />
+            </div>
+          </div>
+          <div class="d-flex justify-content-between gap-3">
+            <div class="mb-3 flex-fill">
+              <label for="phone" class="form-label">Phone</label>
+              <input type="tel" class="form-control" id="phone" name="phone" placeholder="617-555-0199" />
+            </div>
+            <div class="mb-3 flex-fill">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" class="form-control" id="email" name="email" placeholder="info@example.com" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="website" class="form-label">Website</label>
+            <input type="url" class="form-control" id="website" name="websiteLink"
+              placeholder="https://www.example.com" />
+          </div>
+
+          <div class="mb-3">
+            <label for="tags" class="form-label">Tags / Services</label>
+            <input type="text" class="form-control" id="tags" name="tags"
+              placeholder="Emergency Services, Surgical Services" />
+            <div class="form-text">Comma-separated list of services</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="insurances" class="form-label">Accepted Insurances</label>
+            <input type="text" class="form-control" id="insurances" name="insurances"
+              placeholder="Cigna, Blue Cross Blue Shield" />
+            <div class="form-text">Comma-separated list of accepted insurers</div>
+          </div>
+
+          <hr class="my-2" />
+          <div class="d-flex justify-content-between align-content-center">
+            <a href="search.html" class="btn btn-danger text-center text-md-center">Cancel</a>
+            <button type="submit" class="btn btn-primary text-center text-md-center">
+              Add Location
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="container-fluid row bg-body-tertiary pt-3">
+    <span class="col">NavHealth</span>
+    <span class="col text-end">by Vasilios Nicholas and Aryan Yadav.</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script type="module" src="./scripts/add-location.js"></script>
+</body>
+
+</html>
