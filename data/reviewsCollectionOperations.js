@@ -36,7 +36,12 @@ export function getReviewsMetaData(query) {
   parseObjectId(query);
   return reviewsCollection
     .find(query)
-    .project({ business_id: 1, num_reviews: 1, average_rating: 1 })
+    .project({
+      business_id: 1,
+      business_name: 1,
+      num_reviews: 1,
+      average_rating: 1,
+    })
     .toArray();
 }
 

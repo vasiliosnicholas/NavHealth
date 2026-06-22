@@ -36,15 +36,20 @@ reviewsRouter.get("/GetReviews/", async (req, res) => {
 
 reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
   const business_ids = req.query.business_ids;
-  if (!business_ids) {
+  const id = req.query.id;
+  if (!business_ids && !id) {
     /**
      * TODO: using HTTP respone code for not implemented for now.
      * Don't want to accept query to get all documents in reviews collection,
      * only for a specific business.
      */
-    res.status(501).send("You must request reviews for a specific business!");
+    res
+      .status(501)
+      .send("You must request reviews metadata for a specific business!");
   } else {
-    const query = { business_id: { $in: business_ids.split("_") } };
+    const query = business_ids
+      ? { business_id: { $in: business_ids.split("_") } }
+      : { _id: id };
     try {
       const reviews = await getReviewsMetaData(query);
       res.json(reviews);
