@@ -96,9 +96,11 @@ async function getReviews() {
       response.status,
       response.statusText,
     );
+    return false;
   }
   reviewsDocument = await response.json();
   postReviewButton.href = `${POST_REVIEW_URL}?${params}`;
+  return true;
 }
 
 function likeButtonUpdate(likeButton, review) {
@@ -303,18 +305,22 @@ function handleAdmin() {
 }
 
 async function genElements() {
-  await getReviews();
-  genReviews();
-  handleAdmin();
-  const sort = DropDownGenerator(
-    dropDown,
-    dropDownBtnName,
-    Object.keys(categories),
-    Object.keys(categories)[0],
-    eventListenerFunctionsToExecute,
-    executeEventListenerFunctionsOnInitialization,
-    categoryPrefix,
-  );
+  if (await getReviews()) {
+    genReviews();
+    handleAdmin();
+    const sort = DropDownGenerator(
+      dropDown,
+      dropDownBtnName,
+      Object.keys(categories),
+      Object.keys(categories)[0],
+      eventListenerFunctionsToExecute,
+      executeEventListenerFunctionsOnInitialization,
+      categoryPrefix,
+    );
+  } else {
+    reviewsParentElement.innerHTML =
+      "Error: Incorrect query or failed to connect to database";
+  }
 }
 
 function updateReviews() {
