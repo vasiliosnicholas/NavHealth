@@ -1,4 +1,5 @@
 import SearchAndDropDownGenerator from "./SearchAndDropDownGenerator.js";
+import getInitials from "./getInitials.js";
 
 const FLOAT_PRECISION = 1;
 const LOCATION_TYPE_LABELS = {
@@ -77,17 +78,6 @@ function debounce(fn, delay) {
 
 function formatAddress(address) {
   return `${address.street}, ${address.city}, ${address.state} ${address.zipCode}`;
-}
-
-function getInitials(name) {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  const initial1 = words[0] ? words[0].substring(0, 1) : "";
-  const initial2 = words[1]
-    ? words[1].substring(0, 1)
-    : words[0]
-      ? words[0].substring(1, 2)
-      : "";
-  return (initial1 + initial2).toUpperCase();
 }
 
 function pinIcon() {

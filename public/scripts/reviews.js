@@ -1,4 +1,5 @@
 import DropDownGenerator from "./DropDownGenerator.js";
+import getInitials from "./getInitials.js";
 
 const descriptions = document.querySelectorAll(".description");
 const reviewsParentElement = document.getElementById("reviews");
@@ -18,17 +19,6 @@ const REVIEWS_URL = "reviews.html";
 const FLOAT_PRECISION = 1;
 
 let reviewElements = {};
-
-function getInitials(name) {
-  const words = name.trim().split(/\s+/).filter(Boolean);
-  const initial1 = words[0] ? words[0].substring(0, 1) : "";
-  const initial2 = words[1]
-    ? words[1].substring(0, 1)
-    : words[0]
-      ? words[0].substring(1, 2)
-      : "";
-  return (initial1 + initial2).toUpperCase();
-}
 
 function comparator(field, parser, flip = false) {
   return (r1, r2) => {
