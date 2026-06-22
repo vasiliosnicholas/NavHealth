@@ -91,6 +91,7 @@ reviewsRouter.put("/UpdateReviewsMetaData/", async (req, res) => {
     const query = business_id
       ? { business_id: business_id }
       : { _id: review_id };
+  }
 });
 
 reviewsRouter.put("/UpdateReview/", async (req, res) => {
