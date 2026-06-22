@@ -2,9 +2,12 @@ import express from "express";
 import {
   getReviews,
   getReviewsMetaData,
+  updateReview,
 } from "../data/reviewsCollectionOperations.js";
 
 const reviewsRouter = express.Router();
+
+const UPDATE_OPERATIONS = new Set(["$inc", "$set"]);
 
 reviewsRouter.get("/GetReviews/", async (req, res) => {
   const business_id = req.query.business_id;
@@ -53,20 +56,46 @@ reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
 
 reviewsRouter.post("/CreateReview/", async (req, res) => {});
 
+reviewsRouter.delete("/DeleteReviews/", async (req, res) => {});
+
 reviewsRouter.delete("/DeleteReview/", async (req, res) => {});
 
 reviewsRouter.put("/UpdateReview/", async (req, res) => {
-  const id = req.query.id;
+  console.log("reached");
   const review_id = req.query.review_id;
-  if (!id && !review_id) {
-    res
-      .status(500)
-      .send("You must pass a reviews document id along with a review id!");
-  }
   const field = req.query.field;
   const operation = req.query.operation;
-  const options = req.query.options;
-  const update = {};
+  let value = req.query.value;
+  if (!review_id || !field || !operation || !value) {
+    res
+      .status(500)
+      .send(
+        "You must pass a review id, an operation, a field and a value to update the field to!",
+      );
+    console.error("fail");
+  } else if (!UPDATE_OPERATIONS.has(operation)) {
+    res
+      .status(500)
+      .send(
+        "Operation must be one of the following operations:",
+        UPDATE_OPERATIONS,
+      );
+    console.error("fail 2", operation);
+  } else {
+    try {
+      if (operation === "$inc") {
+        value = parseFloat(value);
+      }
+      const query = { "reviews._id": review_id };
+      const update = {
+        [operation]: { [`reviews.$.${field}`]: value },
+      };
+      updateReview(query, update);
+      res.send(`${field} for review ${review_id} updated`);
+    } catch (error) {
+      console.error("Error updating review field: ", error);
+    }
+  }
 });
 
 export default reviewsRouter;

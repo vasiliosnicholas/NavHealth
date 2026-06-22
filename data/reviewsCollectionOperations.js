@@ -1,8 +1,6 @@
 import { isConnected, connectDb, getDb } from "../db.js";
 import { ObjectId } from "mongodb";
 
-const OBJ_ID_ANALOGUES = ["_id", "business_id"];
-
 process.loadEnvFile();
 
 const reviewsCollectionName =
@@ -15,8 +13,8 @@ if (!isConnected()) {
 const reviewsCollection = getDb().collection(reviewsCollectionName);
 
 function parseObjectId(query) {
-  for (const key of OBJ_ID_ANALOGUES) {
-    if (Object.keys(query).includes(key)) {
+  for (const key of Object.keys(query)) {
+    if (key.includes("_id")) {
       if (typeof query[key] == "object") {
         const idArray = Object.values(query[key])[0];
         for (let i = 0; i < idArray.length; i++) {
@@ -42,7 +40,9 @@ export function getReviewsMetaData(query) {
     .toArray();
 }
 
-export function updateReviewMetaData() {}
+export function updateReviewMetaData(query, update, options = undefined) {
+  
+}
 
 export function updateReview(query, update, options = undefined) {
   parseObjectId(query);

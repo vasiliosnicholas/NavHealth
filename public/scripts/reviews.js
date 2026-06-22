@@ -3,13 +3,27 @@ import DropDownGenerator from "./DropDownGenerator.js";
 const descriptions = document.querySelectorAll(".description");
 const reviewsParentElement = document.getElementById("reviews");
 const postReviewButton = document.getElementById("post-review");
+const thumbnail = document.querySelector(".result-thumb");
+const ratingElement = document.getElementById("average-rating");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
+const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
 const POST_REVIEW_URL = "post-review.html";
 
 const dropDown = document.getElementById("dropdown-filter");
 const dropDownBtnName = document.getElementById("filter-dropdown-btn-name");
 let reviewElements = {};
+
+function getInitials(name) {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+  const initial1 = words[0] ? words[0].substring(0, 1) : "";
+  const initial2 = words[1]
+    ? words[1].substring(0, 1)
+    : words[0]
+      ? words[0].substring(1, 2)
+      : "";
+  return (initial1 + initial2).toUpperCase();
+}
 
 function comparator(field, parser, flip = false) {
   return (r1, r2) => {
@@ -89,7 +103,33 @@ function dislikeButtonUpdate(dislikeButton, review) {
   dislikeButton.innerHTML = `Dislike | <small>${review.num_dislikes}</small>`;
 }
 
+async function updateReview(review_id, operation, field, value) {
+  const updateParams = new URLSearchParams();
+  updateParams.set("review_id", review_id);
+  updateParams.set("operation", operation);
+  updateParams.set("field", field);
+  updateParams.set("value", value);
+  return await fetch(`${UPDATE_REVIEW_URL}?${updateParams}`, { method: "PUT" });
+}
+
 function genReviews() {
+  ratingElement.innerHTML = `Overall Rating: ${parseFloat(reviewsDocument.average_rating).toFixed(1)}`;
+  for (const description of descriptions) {
+    description.classList.remove("placeholder");
+    description.innerHTML = `Reviews for ${reviewsDocument.business_name}`;
+  }
+
+  for (const placeholderParentElement of document.querySelectorAll(
+    ".placeholder-wave",
+    ".placeholder-glow",
+  )) {
+    placeholderParentElement.classList.remove(
+      "placeholder-wave",
+      "placeholder-glow",
+    );
+  }
+  thumbnail.innerHTML = getInitials(reviewsDocument.business_name);
+  thumbnail.classList.remove("placeholder");
   reviewsParentElement.innerHTML = ``;
   for (const review of reviewsDocument.reviews) {
     const reviewSection = document.createElement("section");
@@ -136,21 +176,22 @@ function genReviews() {
     buttonContainer.appendChild(likeButton);
 
     const likeAction = toggleAction(
-      () => {
+      async () => {
         review.num_likes = parseInt(review.num_likes) + 1;
         likeButtonUpdate(likeButton, review);
         try {
           dislikeAction.reset();
           //TODO: Add Post request here.
+          console.log(await updateReview(review._id, "$inc", "num_likes", 1));
         } catch (error) {
           console.error("Error processing like update", error);
         }
       },
-      () => {
+      async () => {
         review.num_likes = parseInt(review.num_likes) - 1;
         likeButtonUpdate(likeButton, review);
         try {
-          //TODO: Add Post request here.
+          await updateReview(review._id, "$inc", "num_likes", -1);
         } catch (error) {
           console.error("Error processing like reversal update", error);
         }
@@ -168,21 +209,21 @@ function genReviews() {
     buttonContainer.appendChild(dislikeButton);
 
     const dislikeAction = toggleAction(
-      () => {
+      async () => {
         review.num_dislikes = parseInt(review.num_dislikes) + 1;
         dislikeButtonUpdate(dislikeButton, review);
         try {
           likeAction.reset();
-          //TODO: Add Post request here.
+          await updateReview(review._id, "$inc", "num_dislikes", 1);
         } catch (error) {
           console.error("Error processing dislike update", error);
         }
       },
-      () => {
+      async () => {
         review.num_dislikes = parseInt(review.num_dislikes) - 1;
         dislikeButtonUpdate(dislikeButton, review);
         try {
-          //TODO: Add Post request here.
+          await updateReview(review._id, "$inc", "num_dislikes", -1);
         } catch (error) {
           console.error("Error processing like reversal update", error);
         }
@@ -209,24 +250,6 @@ async function sortReviews(sortKey) {
 await getReviews();
 
 genReviews();
-
-for (const description of descriptions) {
-  description.classList.remove("placeholder");
-  description.innerHTML = `Reviews for ${reviewsDocument.business_name}`;
-}
-
-for (const placeholderParentElement of document.querySelectorAll(
-  ".placeholder-wave",
-  ".placeholder-glow",
-)) {
-  placeholderParentElement.classList.remove(
-    "placeholder-wave",
-    "placeholder-glow",
-  );
-}
-
-document.getElementById("average-rating").innerHTML =
-  `Overall Rating: ${parseFloat(reviewsDocument.average_rating).toFixed(1)}`;
 
 const sort = DropDownGenerator(
   dropDown,
