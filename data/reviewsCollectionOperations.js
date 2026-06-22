@@ -40,11 +40,16 @@ export function getReviewsMetaData(query) {
     .toArray();
 }
 
-export function updateReviewMetaData(query, update, options = undefined) {
-  
-}
+export function createReviewsMetaData(query) {}
 
 export function updateReview(query, update, options = undefined) {
   parseObjectId(query);
   reviewsCollection.updateOne(query, update, options);
+}
+
+export function deleteReview(query, deleteQuery) {
+  parseObjectId(query);
+  parseObjectId(deleteQuery);
+
+  reviewsCollection.updateOne(query, { $pull: { reviews: deleteQuery } });
 }
