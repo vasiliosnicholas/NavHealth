@@ -1,10 +1,112 @@
 import { ObjectId } from "mongodb";
 import { getDb } from "../db.js";
+import { geocodeAddress } from "../utils/geocodeMaps.js";
 
 const LOCATIONS_COLLECTION =
   process.env.MONGODB_LOCATIONS_COLLECTION ?? "locations";
-const REVIEWS_COLLECTION =
-  process.env.MONGODB_REVIEWS_COLLECTION ?? "reviews";
+
+const VALID_LOCATION_TYPES = new Set([
+  "urgent_care",
+  "hospital_acute",
+  "retail_clinic",
+]);
+
+function parseCommaSeparatedList(value) {
+  if (typeof value !== "string" || !value.trim()) {
+    return [];
+  }
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function hasCoordinateValue(value) {
+  return (
+    value !== undefined &&
+    value !== null &&
+    String(value).trim() !== ""
+  );
+}
+
+function validateLocationBody(body) {
+  const errors = [];
+  const name = body.name?.trim();
+  const locationType = body.locationType?.trim();
+  const street = body.address?.street?.trim();
+  const city = body.address?.city?.trim();
+  const state = body.address?.state?.trim();
+  const zipCode = body.address?.zipCode?.trim();
+  const coordinateInput = body.address?.coordinates?.coordinates;
+  const hasLon = hasCoordinateValue(coordinateInput?.[0]);
+  const hasLat = hasCoordinateValue(coordinateInput?.[1]);
+  let parsedCoordinates = null;
+
+  if (!name) {
+    errors.push("Name is required");
+  }
+  if (!locationType || !VALID_LOCATION_TYPES.has(locationType)) {
+    errors.push("A valid location type is required");
+  }
+  if (!street) {
+    errors.push("Street is required");
+  }
+  if (!city) {
+    errors.push("City is required");
+  }
+  if (!state) {
+    errors.push("State is required");
+  }
+  if (!zipCode) {
+    errors.push("Zip code is required");
+  }
+  if (hasLon && hasLat) {
+    const lon = parseNumber(coordinateInput[0]);
+    const lat = parseNumber(coordinateInput[1]);
+    if (lon === undefined || lat === undefined) {
+      errors.push(
+        "Valid longitude and latitude are required when specifying coordinates",
+      );
+    } else {
+      parsedCoordinates = { lon, lat };
+    }
+  }
+
+  if (errors.length > 0) {
+    return { errors: errors };
+  }
+
+  const address = { street, city, state, zipCode };
+  if (parsedCoordinates) {
+    address.coordinates = {
+      type: "Point",
+      coordinates: [parsedCoordinates.lon, parsedCoordinates.lat],
+    };
+  }
+
+  return {
+    location: {
+      name,
+      locationType,
+      address,
+      contactDetails: {
+        phone: body.contactDetails?.phone?.trim() ?? "",
+        email: body.contactDetails?.email?.trim() ?? "",
+      },
+      websiteLink: body.websiteLink?.trim() ?? "",
+      tags: Array.isArray(body.tags)
+        ? body.tags.map((tag) => String(tag).trim()).filter(Boolean)
+        : (body.tags ?? "").split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      insurances: Array.isArray(body.insurances)
+        ? body.insurances.map((item) => String(item).trim()).filter(Boolean)
+        : (body.insurances ?? "").split(",")
+          .map((item) => item.trim())
+          .filter(Boolean),
+    },
+  };
+}
 
 function decodeSearchString(value) {
   return value.replace(/_/g, " ");
@@ -132,6 +234,50 @@ export async function getLocations(req, res) {
   }
 }
 
+export async function createLocation(req, res) {
+  try {
+    const { errors, location } = validateLocationBody(req.body ?? {});
+    if (errors) {
+      return res.status(400).json({ error: errors.join(". ") });
+    }
+
+    if (!location.address.coordinates) {
+      try {
+        const geocoded = await geocodeAddress({
+          street: location.address.street,
+          city: location.address.city,
+          state: location.address.state,
+          zipCode: location.address.zipCode,
+        });
+
+        if (!geocoded) {
+          return res
+            .status(400)
+            .json({ error: "Could not geocode the provided address" });
+        }
+
+        location.address.coordinates = {
+          type: "Point",
+          coordinates: [geocoded.lon, geocoded.lat],
+        };
+      } catch (error) {
+        console.error("Geocoding failed:", error);
+        return res.status(502).json({ error: error.message });
+      }
+    }
+
+    const db = getDb();
+    const insertResult = await db
+      .collection(LOCATIONS_COLLECTION)
+      .insertOne(location);
+
+    res.status(201).json({ _id: insertResult.insertedId, ...location });
+  } catch (error) {
+    console.error("Failed to create location:", error);
+    res.status(500).json({ error: "Failed to create location" });
+  }
+}
+
 export async function deleteLocation(req, res) {
   try {
     const { id } = req.params;
@@ -139,7 +285,7 @@ export async function deleteLocation(req, res) {
       return res.status(400).json({ error: "Invalid location id" });
     }
 
-    const objectId = new ObjectId(id);
+    const objectId = ObjectId.createFromHexString(id);
     const db = getDb();
     const deleteResult = await db
       .collection(LOCATIONS_COLLECTION)
@@ -148,10 +294,6 @@ export async function deleteLocation(req, res) {
     if (deleteResult.deletedCount === 0) {
       return res.status(404).json({ error: "Location not found" });
     }
-
-    await db
-      .collection(REVIEWS_COLLECTION)
-      .deleteMany({ business_id: objectId });
 
     res.status(204).send();
   } catch (error) {

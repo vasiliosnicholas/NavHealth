@@ -4,8 +4,7 @@ const FLOAT_PRECISION = 1;
 const LOCATION_TYPE_LABELS = {
   urgent_care: "Urgent Care Center",
   hospital_acute: "Hospital",
-  hospital_nonacute: "Hospital",
-  private_practice: "Private Practice",
+  retail_clinic: "Retail Clinic",
 };
 
 // TODO: Figure out ip-location to set default search origin, use boston as fallback
@@ -174,7 +173,7 @@ function updateSelectedCardStyles() {
     const isSelected =
       card.dataset.locationIndex !== undefined &&
       state.results[Number(card.dataset.locationIndex)] ===
-        state.selectedLocation;
+      state.selectedLocation;
     card.classList.toggle("is-selected", isSelected);
   }
 }
@@ -396,7 +395,7 @@ function initSearchBar(categories, onCategoryChange) {
   // We use SEARCH_TYPE_TO_CATEGORY to only allow our accepted search types
   const searchCategory =
     SEARCH_TYPE_TO_CATEGORY[
-      searchParams.get("searchType")?.trim().toLowerCase()
+    searchParams.get("searchType")?.trim().toLowerCase()
     ] ?? "Name";
   const searchString = searchParams.get("searchString")?.trim();
 
