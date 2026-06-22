@@ -231,7 +231,7 @@ function renderResultCard(location, index) {
     : null;
   const ratingBadge =
     !isAdminMode && reviewsMetaData
-      ? `<a class="result-badge" style="text-decoration:none" href="${reviewsFullUrl}">Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)}</a>`
+      ? `<a class="result-badge align-items center" style="text-decoration:none" href="${reviewsFullUrl}">Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small></a>`
       : "";
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
