@@ -45,7 +45,15 @@ export function getReviewsMetaData(query) {
     .toArray();
 }
 
-export function createReviewsMetaData(query) {}
+export function createReviewsDocument(document) {
+  parseObjectId(document);
+  reviewsCollection.insertOne(document);
+}
+
+export function deleteReviewsDocument(query) {
+  parseObjectId(query);
+  reviewsCollection.deleteOne(query);
+}
 
 export function updateReview(query, update, options = undefined) {
   parseObjectId(query);
