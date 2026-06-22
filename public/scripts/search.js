@@ -173,7 +173,7 @@ function updateSelectedCardStyles() {
     const isSelected =
       card.dataset.locationIndex !== undefined &&
       state.results[Number(card.dataset.locationIndex)] ===
-      state.selectedLocation;
+        state.selectedLocation;
     card.classList.toggle("is-selected", isSelected);
   }
 }
@@ -304,10 +304,12 @@ async function reviewsMetaDataQueryBuilder() {
 
 async function parseReviewsMetaData(reviewsMetaData) {
   state.reviewsMetaData = {};
-  reviewsMetaData.forEach(
-    (reviewDocument, index) =>
-      (state.reviewsMetaData[reviewDocument.business_id] = reviewDocument),
-  );
+  if (reviewsMetaData && Array.isArray(reviewsMetaData)) {
+    reviewsMetaData.forEach(
+      (reviewDocument, index) =>
+        (state.reviewsMetaData[reviewDocument.business_id] = reviewDocument),
+    );
+  }
 }
 
 async function fetchAndRenderResults() {
@@ -395,7 +397,7 @@ function initSearchBar(categories, onCategoryChange) {
   // We use SEARCH_TYPE_TO_CATEGORY to only allow our accepted search types
   const searchCategory =
     SEARCH_TYPE_TO_CATEGORY[
-    searchParams.get("searchType")?.trim().toLowerCase()
+      searchParams.get("searchType")?.trim().toLowerCase()
     ] ?? "Name";
   const searchString = searchParams.get("searchString")?.trim();
 
