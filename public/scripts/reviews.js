@@ -165,18 +165,35 @@ function genReviews() {
     reviewsParentElement.appendChild(reviewSection);
     reviewElements[review._id] = reviewSection;
     const reviewHeader = document.createElement("div");
-    reviewHeader.className = `d-flex w-100 justify-content-between`;
+    reviewHeader.className = `container-fluids p-0 b-0`;
     reviewSection.appendChild(reviewHeader);
 
+    const firstRow = document.createElement("div");
+    firstRow.className = `w-100 row justify-content-between align-items-center`;
+    reviewHeader.appendChild(firstRow);
+
     const reviewHeading = document.createElement("h3");
-    reviewHeading.className = `mb-1`;
+    reviewHeading.className = `mb-1 col`;
     reviewHeading.innerHTML = review.review_title;
-    reviewHeader.appendChild(reviewHeading);
+    firstRow.appendChild(reviewHeading);
+    const userNameThumbnail = document.createElement("div");
+    userNameThumbnail.className = `mb-1 col-1 result-thumb h-25 w-auto`;
+    userNameThumbnail.innerHTML = getInitials(review.reviewer_username);
+    firstRow.appendChild(userNameThumbnail);
+
+    const secondRow = document.createElement("div");
+    secondRow.className = `d-flex w-100 mx-3 row container-fluid justify-content-between align-items-center`;
+    reviewHeader.appendChild(secondRow);
 
     const reviewRating = document.createElement("small");
-    reviewRating.className = `mb-1`;
+    reviewRating.className = `mb-1 col-8 `;
     reviewRating.innerHTML = `Rating: ${review.rating}`;
-    reviewHeader.appendChild(reviewRating);
+    secondRow.appendChild(reviewRating);
+
+    const userName = document.createElement("small");
+    userName.className = `mb-1 mx-1 col text-end`;
+    userName.innerHTML = review.reviewer_username;
+    secondRow.appendChild(userName);
 
     const reviewBody = document.createElement("p");
     reviewBody.className = `mb-1`;
@@ -184,14 +201,17 @@ function genReviews() {
     reviewSection.appendChild(reviewBody);
 
     const reviewFooter = document.createElement("div");
-    reviewFooter.className = `d-flex justify-content-between`;
+    reviewFooter.className = `d-flex justify-content-between align-items-center`;
     reviewSection.appendChild(reviewFooter);
 
     const reviewDate = document.createElement("small");
     reviewDate.className = "col";
     reviewDate.innerHTML = `Posted on: ${review.submitted_at}`;
     reviewFooter.appendChild(reviewDate);
-
+    const submittedDate = document.createElement("small");
+    submittedDate.className = "col";
+    submittedDate.innerHTML = `Visit date: ${review.visit_date}`;
+    reviewFooter.appendChild(submittedDate);
     const buttonContainer = document.createElement("div");
     buttonContainer.className = "btn-group";
     buttonContainer.role = "group";
