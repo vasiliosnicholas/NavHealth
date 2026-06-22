@@ -31,6 +31,24 @@ const REVIEWS_METADATA_URL = "/api/Reviews/GetReviewsMetaData";
 const isAdminMode =
   new URLSearchParams(window.location.search).get("admin") === "true";
 
+const manageListingsNavItem = document.getElementById("manage-listings-nav");
+
+function handleAdminNav() {
+  if (!manageListingsNavItem) {
+    return;
+  }
+
+  if (isAdminMode) {
+    manageListingsNavItem.textContent = "Stop Managing Items";
+    manageListingsNavItem.classList.add("active");
+    manageListingsNavItem.href = "search.html";
+  } else {
+    manageListingsNavItem.textContent = "Manage Listings";
+    manageListingsNavItem.classList.remove("active");
+    manageListingsNavItem.href = "search.html?admin=true";
+  }
+}
+
 let searchBarGen;
 
 const state = {
@@ -528,6 +546,7 @@ function bindEvents(debouncedFetch) {
 
 async function init() {
   try {
+    handleAdminNav();
     const debouncedFetch = debounce(fetchAndRenderResults, DEBOUNCE_MS);
     const categoriesResponse = await fetch(CATEGORIES_URL);
     if (!categoriesResponse.ok) {
