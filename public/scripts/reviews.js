@@ -1,5 +1,6 @@
 import DropDownGenerator from "./DropDownGenerator.js";
 import getInitials from "./getInitials.js";
+import updateReviewsMetaData from "./updateReviewsMetaData.js";
 
 const descriptions = document.querySelectorAll(".description");
 const reviewsParentElement = document.getElementById("reviews");
@@ -107,17 +108,6 @@ async function updateReview(review_id, operation, field, value) {
   updateParams.set("field", field);
   updateParams.set("value", value);
   return await fetch(`${UPDATE_REVIEW_URL}?${updateParams}`, { method: "PUT" });
-}
-
-async function updateReviewsMetaData(id, operation, field, value) {
-  const updateParams = new URLSearchParams();
-  updateParams.set("id", id);
-  updateParams.set("operation", operation);
-  updateParams.set("field", field);
-  updateParams.set("value", value);
-  return await fetch(`${UPDATE_REVIEWS_METADATA_URL}?${updateParams}`, {
-    method: "PUT",
-  });
 }
 
 async function deleteReview(review_id) {
