@@ -11,9 +11,11 @@ const adminAnchor = document.querySelector(".admin");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
 const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
+const UPDATE_REVIEWS_METADATA_URL = "/api/Reviews/UpdateReviewsMetaData";
 const DELETE_REVIEW_URL = "/api/Reviews/DeleteReview";
 const POST_REVIEW_URL = "post-review.html";
 const REVIEWS_URL = "reviews.html";
+const FLOAT_PRECISION = 1;
 
 let reviewElements = {};
 
@@ -115,6 +117,17 @@ async function updateReview(review_id, operation, field, value) {
   return await fetch(`${UPDATE_REVIEW_URL}?${updateParams}`, { method: "PUT" });
 }
 
+async function updateReviewsMetaData(id, operation, field, value) {
+  const updateParams = new URLSearchParams();
+  updateParams.set("id", id);
+  updateParams.set("operation", operation);
+  updateParams.set("field", field);
+  updateParams.set("value", value);
+  return await fetch(`${UPDATE_REVIEWS_METADATA_URL}?${updateParams}`, {
+    method: "PUT",
+  });
+}
+
 async function deleteReview(review_id) {
   const deleteParams = new URLSearchParams();
   deleteParams.set("review_id", review_id);
@@ -124,7 +137,8 @@ async function deleteReview(review_id) {
 }
 
 function genReviews() {
-  ratingElement.innerHTML = `Overall Rating: ${parseFloat(reviewsDocument.average_rating).toFixed(1)}`;
+  reviewsDocument.average_rating = parseFloat(reviewsDocument.average_rating);
+  ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.average_rating.toFixed(FLOAT_PRECISION)}`;
   for (const description of descriptions) {
     description.classList.remove("placeholder");
     description.innerHTML = `Reviews for ${reviewsDocument.business_name}`;
@@ -252,10 +266,27 @@ function genReviews() {
       deleteButton.innerHTML = "Delete Review";
       buttonContainer.appendChild(deleteButton);
       deleteButton.addEventListener("click", async () => {
+        const rating = review.rating;
+        reviewsDocument.average_rating =
+          (reviewsDocument.average_rating * reviewsDocument.num_reviews -
+            rating) /
+          --reviewsDocument.num_reviews;
+        await updateReviewsMetaData(
+          reviewsDocument._id,
+          "$set",
+          "average_rating",
+          reviewsDocument.average_rating,
+        );
+        await updateReviewsMetaData(
+          reviewsDocument._id,
+          "$inc",
+          "num_reviews",
+          -1,
+        );
+        ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.average_rating.toFixed(FLOAT_PRECISION)}`;
         await deleteReview(review._id);
         delete reviewsDocument[review._id];
         delete reviewSection.remove();
-        console.log("deleted!");
       });
     }
   }

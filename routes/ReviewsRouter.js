@@ -80,17 +80,40 @@ reviewsRouter.delete("/DeleteReview/", async (req, res) => {
 reviewsRouter.put("/UpdateReviewsMetaData/", async (req, res) => {
   const business_id = req.query.business_id;
   const review_id = req.query.id;
-  if (!business_id && !review_id) {
+  const field = req.query.field;
+  const operation = req.query.operation;
+  let value = req.query.value;
+  if ((!business_id && !review_id) || !field || !operation || !value) {
     /**
      * TODO: using HTTP respone code for not implemented for now.
      * Don't want to accept query to get all documents in reviews collection,
      * only for a specific business.
      */
     res.status(501).send("You must request reviews for a specific business!");
+  } else if (!UPDATE_OPERATIONS.has(operation)) {
+    res
+      .status(500)
+      .send(
+        "Operation must be one of the following operations:",
+        UPDATE_OPERATIONS,
+      );
   } else {
-    const query = business_id
-      ? { business_id: business_id }
-      : { _id: review_id };
+    try {
+      if (operation === "$inc" || operation === "$set") {
+        value = parseFloat(value);
+      }
+      const query = business_id
+        ? { business_id: business_id }
+        : { _id: review_id };
+
+      const update = { [operation]: { [field]: value } };
+
+      updateReview(query, update);
+      res.send(`Updated ${field} for ${review_id}`);
+    } catch (error) {
+      res.error(500).send(`Error updating ${field} for ${review_id}:`, error);
+      console.error(`Error updating ${field} for ${review_id}:`, error);
+    }
   }
 });
 
