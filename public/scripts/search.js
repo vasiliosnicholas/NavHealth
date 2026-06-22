@@ -80,6 +80,10 @@ function formatAddress(address) {
   return `${address.street}, ${address.city}, ${address.state} ${address.zipCode}`;
 }
 
+function starIcon() {
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" data-name="Layer 1" viewBox="0 0 100 100" x="0px" y="0px"><title>icon</title><path d="M54.8,17.3l7.4,14.9a5.3,5.3,0,0,0,4,2.9l16.5,2.4a5.3,5.3,0,0,1,3,9.1L73.7,58.3A5.3,5.3,0,0,0,72.1,63L75,79.4A5.3,5.3,0,0,1,67.2,85L52.5,77.3a5.3,5.3,0,0,0-5,0L32.8,85A5.3,5.3,0,0,1,25,79.4L27.9,63a5.3,5.3,0,0,0-1.5-4.7L14.4,46.6a5.3,5.3,0,0,1,3-9.1l16.5-2.4a5.3,5.3,0,0,0,4-2.9l7.4-14.9A5.3,5.3,0,0,1,54.8,17.3Z"/></svg>`;
+}
+
 function pinIcon() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/></svg>`;
 }
@@ -231,7 +235,7 @@ function renderResultCard(location, index) {
     : null;
   const ratingBadge =
     !isAdminMode && reviewsMetaData
-      ? `<a class="result-badge align-items center" style="text-decoration:none" href="${reviewsFullUrl}">Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small></a>`
+      ? `<a class="result-badge align-items center" style="text-decoration:none" href="${reviewsFullUrl}">${starIcon()}Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small></a>`
       : "";
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
