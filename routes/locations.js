@@ -136,8 +136,20 @@ function parseQueryParams(query) {
   const searchType = query.searchType?.trim().toLowerCase();
   const searchString = query.searchString?.trim();
 
+  const locationTypeRaw = query.locationType?.trim();
+  let locationTypes = null;
+
+  if (locationTypeRaw) {
+    const types = parseCommaSeparatedList(locationTypeRaw).filter((type) =>
+      VALID_LOCATION_TYPES.has(type),
+    );
+    if (types.length > 0) {
+      locationTypes = types;
+    }
+  }
+
   return {
-    locationType: query.locationType?.trim() || "urgent_care",
+    locationTypes,
     zip: query.zip?.trim() ?? "",
     lat,
     lon,
@@ -175,7 +187,11 @@ function applyRequestFilter(filter, searchType, searchString) {
 }
 
 function buildMatchFilter(params) {
-  const filter = { locationType: params.locationType };
+  const filter = {};
+
+  if (params.locationTypes?.length) {
+    filter.locationType = { $in: params.locationTypes };
+  }
 
   if (params.zip.length === 5) {
     filter["address.zipCode"] = params.zip;
