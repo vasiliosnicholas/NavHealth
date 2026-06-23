@@ -60,6 +60,11 @@ async function submitReview() {
 }
 
 async function genElements() {
+  const currentDate = new Date();
+  dateInput.setAttribute(
+    "max",
+    `${currentDate.getFullYear()}-${currentDate.getMonth() + 1 < 10 ? `0${currentDate.getMonth() + 1}` : currentDate.getMonth() + 1}-${currentDate.getDate() < 10 ? `0${currentDate.getDate()}` : currentDate.getDate()}`,
+  );
   metadata = await getReviewsMetaData();
   if (metadata !== null && metadata.length > 0) {
     metadata = metadata[0];
