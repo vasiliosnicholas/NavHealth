@@ -94,7 +94,7 @@ reviewsRouter.post("/CreateReviewsDocument", async (req, res) => {
       res.send("Successfully created reviews document!");
     } catch (error) {
       console.error(`Error creating reviews document:`, error);
-      res.error(500).send(`Error creatings reviews document:`, error);
+      res.status(500).send(`Error creatings reviews document:`, error);
     }
   }
 });
@@ -113,7 +113,7 @@ reviewsRouter.delete("/DeleteReviewsDocument/", async (req, res) => {
       res.send("Reviews document successfully deleted!");
     } catch (error) {
       console.error(`Error deleting reviews document:`, error);
-      res.error(500).send(`Error deleting reviews document:`, error);
+      res.status(500).send(`Error deleting reviews document:`, error);
     }
   }
 });
@@ -130,7 +130,7 @@ reviewsRouter.delete("/DeleteReview/", async (req, res) => {
     res.send(`Deleted ${review_id}`);
   } catch (error) {
     console.error(`Error deleting review ${review_id}:`, error);
-    res.error(500).send(`Error deleting review ${review_id}:`, error);
+    res.status(500).send(`Error deleting review ${review_id}:`, error);
   }
 });
 
@@ -168,7 +168,7 @@ reviewsRouter.put("/UpdateReviewsMetaData/", async (req, res) => {
       updateReview(query, update);
       res.send(`Updated ${field} for ${review_id}`);
     } catch (error) {
-      res.error(500).send(`Error updating ${field} for ${review_id}:`, error);
+      res.status(500).send(`Error updating ${field} for ${review_id}:`, error);
       console.error(`Error updating ${field} for ${review_id}:`, error);
     }
   }
@@ -204,7 +204,7 @@ reviewsRouter.put("/UpdateReview/", async (req, res) => {
       updateReview(query, update);
       res.send(`${field} for review ${review_id} updated`);
     } catch (error) {
-      res.error(500).send(`Error updating ${field} for ${review_id}:`, error);
+      res.status(500).send(`Error updating ${field} for ${review_id}:`, error);
       console.error(`Error updating ${field} for ${review_id}:`, error);
     }
   }
