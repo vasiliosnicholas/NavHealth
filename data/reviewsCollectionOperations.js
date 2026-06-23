@@ -31,6 +31,7 @@ function parseObjectId(query) {
     if (key.includes("_id")) {
       if (
         typeof query[key] == "object" &&
+        query[key] != null &&
         Array.isArray(Object.values(query[key])) &&
         Object.values(query[key]).length > 0
       ) {
