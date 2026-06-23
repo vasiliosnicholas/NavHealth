@@ -270,7 +270,6 @@ function renderResultCard(location, index) {
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
     : "";
-  console.log(reviewsMetaData);
   const actionsHtml = isAdminMode
     ? renderAdminActions(location)
     : renderNormalActions(location, reviewsMetaData);
@@ -477,6 +476,25 @@ async function deleteLocation(locationId, index, locationName) {
   }
 }
 
+async function deleteReviews(locationId) {
+  try {
+    const reviewsResponse = await fetch(
+      `/api/Reviews/DeleteReviewsDocument?business_id=${locationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+    if (!reviewsResponse.ok) {
+      throw new Error(
+        `Failed to delete reviews for location (${reviewsResponse.status})`,
+      );
+    }
+  } catch (error) {
+    window.alert("Unable to delete reviews for this location.");
+    console.error(error);
+  }
+}
+
 function bindEvents(debouncedFetch) {
   elements.searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -504,6 +522,7 @@ function bindEvents(debouncedFetch) {
       const location = state.results[index];
       if (location) {
         deleteLocation(location._id, index, location.name);
+        deleteReviews(location._id);
       }
       return;
     }
