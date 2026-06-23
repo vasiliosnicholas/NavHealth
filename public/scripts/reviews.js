@@ -13,7 +13,6 @@ const adminAnchor = document.querySelector(".admin");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
 const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
-const UPDATE_REVIEWS_METADATA_URL = "/api/Reviews/UpdateReviewsMetaData";
 const DELETE_REVIEW_URL = "/api/Reviews/DeleteReview";
 const POST_REVIEW_URL = "post-review.html";
 const REVIEWS_URL = "reviews.html";
@@ -91,6 +90,7 @@ async function getReviews() {
   }
   reviewsDocument = await response.json();
   postReviewButton.href = `${POST_REVIEW_URL}?${params}`;
+  if ((await reviewsDocument) == null) return false;
   return true;
 }
 
@@ -120,7 +120,7 @@ async function deleteReview(review_id) {
 
 function genReviews() {
   reviewsDocument.average_rating = parseFloat(reviewsDocument.average_rating);
-  ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.average_rating.toFixed(FLOAT_PRECISION)}`;
+  ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.num_reviews > 0 ? reviewsDocument.average_rating.toFixed(FLOAT_PRECISION) : "Unrated"}`;
   for (const description of descriptions) {
     description.classList.remove("placeholder");
     description.innerHTML = `Reviews for ${reviewsDocument.business_name}`;
@@ -139,6 +139,9 @@ function genReviews() {
   thumbnail.classList.remove("placeholder");
   reviewsParentElement.innerHTML =
     reviewsDocument.reviews.length > 0 ? `` : "No reviews found";
+  if (reviewsDocument.reviews.length <= 0) {
+    reviewsParentElement.classList.add("text-center");
+  }
   for (const review of reviewsDocument.reviews) {
     const reviewSection = document.createElement("section");
     reviewSection.className = `list-group-item`;
@@ -296,13 +299,19 @@ function genReviews() {
   }
 }
 
+function genQueryParam() {
+  return params.has("id")
+    ? `?id=${params.get("id")}`
+    : `?business_id=${params.get("business_id")}`;
+}
+
 function handleAdmin() {
   if (params.has("admin")) {
     adminAnchor.innerHTML = "Stop Managing Reviews";
     adminAnchor.classList.add("active");
-    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}`;
+    adminAnchor.href = `${REVIEWS_URL}${genQueryParam()}`;
   } else {
-    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}&admin`;
+    adminAnchor.href = `${REVIEWS_URL}${genQueryParam()}&admin`;
   }
 }
 

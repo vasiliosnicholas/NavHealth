@@ -31,6 +31,7 @@ function parseObjectId(query) {
     if (key.includes("_id")) {
       if (
         typeof query[key] == "object" &&
+        query[key] != null &&
         Array.isArray(Object.values(query[key])) &&
         Object.values(query[key]).length > 0
       ) {
@@ -63,9 +64,9 @@ export function getReviewsMetaData(query) {
     .toArray();
 }
 
-export function createReviewsDocument(document) {
+export async function createReviewsDocument(document) {
   parseObjectId(document);
-  reviewsCollection.insertOne(document);
+  await reviewsCollection.insertOne(document);
 }
 
 export function deleteReviewsDocument(query) {

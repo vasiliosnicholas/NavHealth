@@ -1,4 +1,5 @@
 import express from "express";
+import { getLocation } from "./locations.js";
 import {
   createReview,
   createReviewsDocument,
@@ -13,7 +14,7 @@ const reviewsRouter = express.Router();
 
 const UPDATE_OPERATIONS = new Set(["$inc", "$set"]);
 
-reviewsRouter.get("/GetReviews/", async (req, res) => {
+async function getReviewsRoute(req, res) {
   const business_id = req.query.business_id;
   const review_id = req.query.id;
   if (!business_id && !review_id) {
@@ -35,10 +36,59 @@ reviewsRouter.get("/GetReviews/", async (req, res) => {
       res.status(500).send("Error fetching reviews!");
     }
   }
+}
+
+//middleware function for creating Reviews Document (skeleton document)
+reviewsRouter.use("/GetReviews/", async (req, res, next) => {
+  const business_id = req.query.business_id;
+  const review_id = req.query.id;
+  if (!business_id && !review_id) {
+    /**
+     * TODO: using HTTP respone code for not implemented for now.
+     * Don't want to accept query to get all documents in reviews collection,
+     * only for a specific business.
+     */
+    res.status(501).send("You must request reviews for a specific business!");
+    return;
+  } else {
+    const query = business_id
+      ? { business_id: business_id }
+      : { _id: review_id };
+    try {
+      const reviews = await getReviews(query);
+      if (reviews !== null) {
+        next("route");
+      } else if (business_id && (reviews == null || !reviews.ok)) {
+        const location = await getLocation(business_id);
+        if (!location) {
+          throw new Error("Couldn't get location!");
+        }
+        await createReviewsDocument({
+          business_id: business_id,
+          business_name: location.name,
+          reviews: [],
+          num_reviews: 0,
+          average_rating: 0,
+        });
+        next("route");
+      } else {
+        throw new Error(
+          "Query for id that doesn't exist in reviews collection!",
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching reviews: ", error);
+      res.status(500).send("Error fetching reviews!", error);
+      return;
+    }
+  }
 });
+reviewsRouter.get("/GetReviews/", getReviewsRoute);
 
 reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
-  const business_ids = req.query.business_ids;
+  const business_ids = req.query.business_ids
+    ? req.query.business_ids
+    : req.query.business_id;
   const id = req.query.id;
   if (!business_ids && !id) {
     res
@@ -72,29 +122,6 @@ reviewsRouter.post("/CreateReview/", async (req, res) => {
     } catch (error) {
       console.error("Error creating review", error);
       res.status(500).send("Error creating review", error);
-    }
-  }
-});
-
-reviewsRouter.post("/CreateReviewsDocument", async (req, res) => {
-  const business_id = req.query.business_id;
-  const business_name = req.query.business_name;
-  if (!business_id || !business_name) {
-    res.status(501).send("You must specify a bussiness name and business id!");
-  } else {
-    const document = {
-      business_id: business_id,
-      business_name: business_name,
-      reviews: [],
-      num_reviews: 0,
-      average_rating: 0,
-    };
-    try {
-      createReviewsDocument(document);
-      res.send("Successfully created reviews document!");
-    } catch (error) {
-      console.error(`Error creating reviews document:`, error);
-      res.status(500).send(`Error creatings reviews document:`, error);
     }
   }
 });

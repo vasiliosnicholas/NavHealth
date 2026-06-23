@@ -244,8 +244,7 @@ function renderNormalActions(location, reviewsMetaData) {
   const website = location.websiteLink ?? "#";
   const reviewsFullUrl = reviewsMetaData
     ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
-    : `${REVIEWS_BASE_URL}`;
-
+    : `${REVIEWS_BASE_URL}?business_id=${location._id}`;
   return `
     <a class="btn btn-call" href="tel:${phone.replace(/[^\d+]/g, "")}">
       ${phoneIcon()} Call
@@ -270,10 +269,9 @@ function renderResultCard(location, index) {
   const reviewsFullUrl = reviewsMetaData
     ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
     : null;
-  const ratingBadge =
-    !isAdminMode && reviewsMetaData
-      ? `<a class="result-badge align-items-end" style="text-decoration:none" href="${reviewsFullUrl}">${starIcon()}Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small></a>`
-      : "";
+  const ratingBadge = !isAdminMode
+    ? `<a class="result-badge align-items-end" style="text-decoration:none" href="${reviewsFullUrl}">${starIcon()}Rating: ${reviewsMetaData && reviewsMetaData.num_reviews > 0 ? `${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small>` : `unrated`}</a>`
+    : "";
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
     : "";
@@ -499,6 +497,25 @@ async function deleteLocation(locationId, index, locationName) {
   }
 }
 
+async function deleteReviews(locationId) {
+  try {
+    const reviewsResponse = await fetch(
+      `/api/Reviews/DeleteReviewsDocument?business_id=${locationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+    if (!reviewsResponse.ok) {
+      throw new Error(
+        `Failed to delete reviews for location (${reviewsResponse.status})`,
+      );
+    }
+  } catch (error) {
+    window.alert("Unable to delete reviews for this location.");
+    console.error(error);
+  }
+}
+
 function handleZipInput(debouncedFetch) {
   const zip = elements.zipCode.value.trim();
 
@@ -541,6 +558,7 @@ function bindEvents(debouncedFetch) {
       const location = state.results[index];
       if (location) {
         deleteLocation(location._id, index, location.name);
+        deleteReviews(location._id);
       }
       return;
     }
