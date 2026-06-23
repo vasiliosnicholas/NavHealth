@@ -11,7 +11,6 @@ import {
 } from "../data/reviewsCollectionOperations.js";
 
 const reviewsRouter = express.Router();
-reviewsRouter.use(express.urlencoded({ extended: true }));
 
 const UPDATE_OPERATIONS = new Set(["$inc", "$set"]);
 
