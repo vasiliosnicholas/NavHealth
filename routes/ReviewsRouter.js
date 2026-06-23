@@ -87,7 +87,6 @@ reviewsRouter.get("/GetReviews/", getReviewsRoute);
 
 reviewsRouter.post("/GetReviewsMetaData/", async (req, res) => {
   const business_ids = req.body;
-  console.log(business_ids);
   if (!business_ids) {
     res
       .status(501)
