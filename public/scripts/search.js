@@ -196,7 +196,7 @@ function updateSelectedCardStyles() {
     const isSelected =
       card.dataset.locationIndex !== undefined &&
       state.results[Number(card.dataset.locationIndex)] ===
-      state.selectedLocation;
+        state.selectedLocation;
     card.classList.toggle("is-selected", isSelected);
   }
 }
@@ -236,7 +236,9 @@ function renderAdminContactBadges(location) {
 function renderNormalActions(location, reviewsMetaData) {
   const phone = location.contactDetails?.phone ?? "";
   const website = location.websiteLink ?? "#";
-  const reviewsFullUrl = `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`;
+  const reviewsFullUrl = reviewsMetaData
+    ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
+    : `${REVIEWS_BASE_URL}`;
 
   return `
     <a class="btn btn-call" href="tel:${phone.replace(/[^\d+]/g, "")}">
@@ -420,7 +422,7 @@ function initSearchBar(categories, onCategoryChange) {
   // We use SEARCH_TYPE_TO_CATEGORY to only allow our accepted search types
   const searchCategory =
     SEARCH_TYPE_TO_CATEGORY[
-    searchParams.get("searchType")?.trim().toLowerCase()
+      searchParams.get("searchType")?.trim().toLowerCase()
     ] ?? "Name";
   const searchString = searchParams.get("searchString")?.trim();
 
