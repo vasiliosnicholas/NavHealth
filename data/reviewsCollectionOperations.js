@@ -31,8 +31,8 @@ function parseObjectId(query) {
     if (key.includes("_id")) {
       if (
         typeof query[key] == "object" &&
-        Array.isArray(query[key]) &&
-        query[key].length > 0
+        Array.isArray(Object.values(query[key])) &&
+        Object.values(query[key]).length > 0
       ) {
         const idArray = Object.values(query[key])[0];
         for (let i = 0; i < idArray.length; i++) {
