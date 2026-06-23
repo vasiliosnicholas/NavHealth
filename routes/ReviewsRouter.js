@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  createReview,
   createReviewsDocument,
   deleteReview,
   deleteReviewsDocument,
@@ -58,46 +59,19 @@ reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
 });
 
 reviewsRouter.post("/CreateReview/", async (req, res) => {
+  const review = await req.body;
   const business_id = req.query.business_id;
   const id = req.query.id;
-  const review_title = req.query.review_name;
-  const username = req.query.user_name;
-  const email = req.query.email;
-  const review_body = req.query.review_body;
-  const rating = req.query.rating;
-  const visit_date = req.query.visit_date;
-  const submitted_at = req.query.submitted_at;
-  if (
-    (!business_id && !id) ||
-    !review_title ||
-    !username ||
-    !email ||
-    !review_body ||
-    !rating ||
-    !visit_date ||
-    !submitted_at
-  ) {
+
+  if (!business_id && !id) {
     res.status(501).send("You must list pass all review attributes!");
   } else {
     const query = business_id ? { business_id: business_id } : { _id: id };
-    const update = {
-      $push: {
-        reviews: {
-          _id: undefined,
-          review_title: review_title,
-          review_body: review_body,
-          rating: parseInt(rating),
-          reviewer_username: username,
-          reviewer_email: email,
-          visit_date: visit_date,
-          submitted_at: submitted_at,
-        },
-      },
-    };
     try {
-      updateReview(query, update);
+      createReview(query, review);
       res.send("Successfully created review!");
     } catch (error) {
+      console.error("Error creating review", error);
       res.status(500).send("Error creating review", error);
     }
   }

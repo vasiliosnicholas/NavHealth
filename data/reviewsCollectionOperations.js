@@ -12,16 +12,34 @@ if (!isConnected()) {
 
 const reviewsCollection = getDb().collection(reviewsCollectionName);
 
+function createObjectId(value) {
+  if (value == null) {
+    return new ObjectId();
+  }
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    value instanceof ObjectId
+  ) {
+    return new ObjectId(value);
+  }
+  return new ObjectId();
+}
+
 function parseObjectId(query) {
   for (const key of Object.keys(query)) {
     if (key.includes("_id")) {
-      if (typeof query[key] == "object") {
+      if (
+        typeof query[key] == "object" &&
+        Array.isArray(query[key]) &&
+        query[key].length > 0
+      ) {
         const idArray = Object.values(query[key])[0];
         for (let i = 0; i < idArray.length; i++) {
-          idArray[i] = new ObjectId(idArray[i]);
+          idArray[i] = createObjectId(idArray[i]);
         }
       } else {
-        query[key] = new ObjectId(query[key]);
+        query[key] = createObjectId(query[key]);
       }
     }
   }
@@ -55,8 +73,16 @@ export function deleteReviewsDocument(query) {
   reviewsCollection.deleteOne(query);
 }
 
+export function createReview(query, review) {
+  parseObjectId(query);
+  parseObjectId(review);
+  console.log(review);
+  reviewsCollection.updateOne(query, { $push: { reviews: review } });
+}
+
 export function updateReview(query, update, options = undefined) {
   parseObjectId(query);
+  parseObjectId(update);
   reviewsCollection.updateOne(query, update, options);
 }
 
