@@ -22,11 +22,7 @@ function parseCommaSeparatedList(value) {
 }
 
 function hasCoordinateValue(value) {
-  return (
-    value !== undefined &&
-    value !== null &&
-    String(value).trim() !== ""
-  );
+  return value !== undefined && value !== null && String(value).trim() !== "";
 }
 
 function validateLocationBody(body) {
@@ -96,14 +92,16 @@ function validateLocationBody(body) {
       websiteLink: body.websiteLink?.trim() ?? "",
       tags: Array.isArray(body.tags)
         ? body.tags.map((tag) => String(tag).trim()).filter(Boolean)
-        : (body.tags ?? "").split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
+        : (body.tags ?? "")
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean),
       insurances: Array.isArray(body.insurances)
         ? body.insurances.map((item) => String(item).trim()).filter(Boolean)
-        : (body.insurances ?? "").split(",")
-          .map((item) => item.trim())
-          .filter(Boolean),
+        : (body.insurances ?? "")
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean),
     },
   };
 }
@@ -157,7 +155,10 @@ function applyRequestFilter(filter, searchType, searchString) {
       filter.tags = decoded;
       break;
     case "name":
-      filter.name = { $regex: decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+      filter.name = {
+        $regex: decoded.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        $options: "i",
+      };
       break;
     case "location": {
       const [city, state] = decoded.split(",").map((part) => part.trim());
@@ -278,7 +279,9 @@ export async function createLocation(req, res) {
 
     const geocodeError = await tryGeoCodeIfNoCoordinates(location);
     if (geocodeError) {
-      return res.status(geocodeError.status).json({ error: geocodeError.error });
+      return res
+        .status(geocodeError.status)
+        .json({ error: geocodeError.error });
     }
 
     const db = getDb();
@@ -293,16 +296,24 @@ export async function createLocation(req, res) {
   }
 }
 
+export async function getLocation(id) {
+  const objectId = parseLocationId(id);
+  if (!objectId) {
+    throw new Error("Invalid location id");
+  }
+  return await getDb()
+    .collection(LOCATIONS_COLLECTION)
+    .findOne({ _id: objectId });
+}
+
 export async function getLocationById(req, res) {
   try {
-    const objectId = parseLocationId(req.params.id);
-    if (!objectId) {
-      return res.status(400).json({ error: "Invalid location id" });
+    let location = undefined;
+    try {
+      location = getLocation(req.params.id);
+    } catch (error) {
+      return res.status(400).json({ error: error });
     }
-
-    const location = await getDb()
-      .collection(LOCATIONS_COLLECTION)
-      .findOne({ _id: objectId });
 
     if (!location) {
       return res.status(404).json({ error: "Location not found" });
@@ -329,7 +340,9 @@ export async function updateLocation(req, res) {
 
     const geocodeError = await tryGeoCodeIfNoCoordinates(location);
     if (geocodeError) {
-      return res.status(geocodeError.status).json({ error: geocodeError.error });
+      return res
+        .status(geocodeError.status)
+        .json({ error: geocodeError.error });
     }
 
     const collection = getDb().collection(LOCATIONS_COLLECTION);

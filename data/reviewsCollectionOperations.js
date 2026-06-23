@@ -63,9 +63,9 @@ export function getReviewsMetaData(query) {
     .toArray();
 }
 
-export function createReviewsDocument(document) {
+export async function createReviewsDocument(document) {
   parseObjectId(document);
-  reviewsCollection.insertOne(document);
+  await reviewsCollection.insertOne(document);
 }
 
 export function deleteReviewsDocument(query) {

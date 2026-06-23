@@ -13,7 +13,6 @@ const adminAnchor = document.querySelector(".admin");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
 const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
-const UPDATE_REVIEWS_METADATA_URL = "/api/Reviews/UpdateReviewsMetaData";
 const DELETE_REVIEW_URL = "/api/Reviews/DeleteReview";
 const POST_REVIEW_URL = "post-review.html";
 const REVIEWS_URL = "reviews.html";
@@ -91,6 +90,8 @@ async function getReviews() {
   }
   reviewsDocument = await response.json();
   postReviewButton.href = `${POST_REVIEW_URL}?${params}`;
+  if (await reviewsDocument == null)
+    return false;
   return true;
 }
 
