@@ -4,7 +4,7 @@ import updateReviewsMetaData from "./updateReviewsMetaData.js";
 const REVIEWS_URL = "reviews.html";
 const REVIEWS_METADATA_URL = "/api/Reviews/GetReviewsMetaData";
 const CREATE_REVIEW_URL = "/api/Reviews/CreateReview";
-const WAIT_TIME = 10000;
+const WAIT_TIME = 5000;
 const descriptions = document.querySelectorAll(".description");
 const cancelBtn = document.getElementById("cancel");
 const form = document.getElementById("review-form");
