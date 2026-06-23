@@ -1,6 +1,24 @@
 const GEOCODE_API_ENDPOINT = "https://geocode.maps.co/search";
 
-export async function geocodeAddress({ street, city, state, zipCode }) {
+function formatGeocodeLabel(result) {
+  const address = result.address ?? {};
+  const locality =
+    address.suburb?.trim() ||
+    address.neighbourhood?.trim() ||
+    address.city?.trim() ||
+    address.town?.trim() ||
+    address.village?.trim();
+
+  const stateAbbr = address["ISO3166-2-lvl4"]?.split("-")[1]?.trim();
+
+  if (locality && stateAbbr) {
+    return `${locality}, ${stateAbbr}`;
+  }
+
+  return null;
+}
+
+export async function geocodeAddress({ street, city, state, zipCode } = {}) {
   const apiKey = process.env.GEOCODE_MAPS_API_KEY;
   if (!apiKey) {
     const error = new Error("Geocoding is not configured. Please manually enter the coordinates.");
@@ -9,14 +27,23 @@ export async function geocodeAddress({ street, city, state, zipCode }) {
   }
 
   const params = new URLSearchParams({
-    street,
-    city,
-    state,
-    postalcode: zipCode,
     country: "US",
     limit: "1",
     api_key: apiKey,
   });
+
+  if (street) {
+    params.set("street", street);
+  }
+  if (city) {
+    params.set("city", city);
+  }
+  if (state) {
+    params.set("state", state);
+  }
+  if (zipCode) {
+    params.set("postalcode", zipCode);
+  }
 
   const response = await fetch(`${GEOCODE_API_ENDPOINT}?${params}`);
   if (!response.ok) {
@@ -36,5 +63,9 @@ export async function geocodeAddress({ street, city, state, zipCode }) {
     return null;
   }
 
-  return { lat, lon };
+  return {
+    lat,
+    lon,
+    label: formatGeocodeLabel(results[0]),
+  };
 }

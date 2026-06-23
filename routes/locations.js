@@ -193,7 +193,7 @@ function buildMatchFilter(params) {
     filter.locationType = { $in: params.locationTypes };
   }
 
-  if (params.zip.length === 5) {
+  if (params.zip.length === 5 && !params.zipGeocoded) {
     filter["address.zipCode"] = params.zip;
   }
 
@@ -245,6 +245,35 @@ function parseLocationId(id) {
   return ObjectId.createFromHexString(id);
 }
 
+async function resolveZipGeocode(params) {
+  const isFiveDigitZip = /^\d{5}$/.test(params.zip);
+  const hasClientCoords =
+    params.lat !== undefined && params.lon !== undefined;
+
+  if (!isFiveDigitZip || hasClientCoords) {
+    return null;
+  }
+
+  try {
+    const geocoded = await geocodeAddress({ zipCode: params.zip });
+    if (!geocoded) {
+      return { status: 400, error: "Could not geocode the provided zip code" };
+    }
+
+    params.lat = geocoded.lat;
+    params.lon = geocoded.lon;
+    params.zipGeocoded = true;
+    params.searchOriginLabel = geocoded.label ?? params.zip;
+    return null;
+  } catch (error) {
+    console.error("Zip geocoding failed:", error);
+    if (error.code === "GEOCODE_NOT_CONFIGURED") {
+      return { status: 502, error: error.message };
+    }
+    return { status: 502, error: error.message };
+  }
+}
+
 async function tryGeoCodeIfNoCoordinates(location) {
   if (location.address.coordinates) {
     return null;
@@ -276,8 +305,25 @@ async function tryGeoCodeIfNoCoordinates(location) {
 export async function getLocations(req, res) {
   try {
     const params = parseQueryParams(req.query);
+    const geocodeError = await resolveZipGeocode(params);
+    if (geocodeError) {
+      return res.status(geocodeError.status).json({ error: geocodeError.error });
+    }
+
     const collection = getDb().collection(LOCATIONS_COLLECTION);
     const locations = await queryLocations(collection, params);
+
+    if (params.zipGeocoded) {
+      return res.json({
+        locations,
+        searchOrigin: {
+          lat: params.lat,
+          lon: params.lon,
+          label: params.searchOriginLabel ?? params.zip,
+        },
+      });
+    }
+
     res.json(locations);
   } catch (error) {
     console.error("Failed to load locations:", error);

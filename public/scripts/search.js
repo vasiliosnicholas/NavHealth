@@ -143,14 +143,15 @@ function buildLocationsQuery() {
   } else if (selectedLocationTypes.length < Object.keys(LOCATION_TYPE_LABELS).length) {
     params.set("locationType", selectedLocationTypes.join(","));
   }
-  params.set("lat", String(state.searchOrigin.lat));
-  params.set("lon", String(state.searchOrigin.lon));
   params.set("maxDistance", elements.distanceRange.value);
   params.set("sort", elements.sortSelect.value);
 
   const zip = elements.zipCode.value.trim();
-  if (zip) {
+  if (zip.length === 5) {
     params.set("zip", zip);
+  } else {
+    params.set("lat", String(state.searchOrigin.lat));
+    params.set("lon", String(state.searchOrigin.lon));
   }
 
   if (state.selectedInsurances.size > 0) {
@@ -349,11 +350,21 @@ async function fetchAndRenderResults() {
   try {
     const query = buildLocationsQuery();
     const response = await fetch(`/api/locations?${query}`);
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error(`Failed to load locations (${response.status})`);
+      throw new Error(data.error ?? `Failed to load locations (${response.status})`);
     }
 
-    state.results = await response.json();
+    if (data.searchOrigin) {
+      state.results = data.locations ?? [];
+      updateSearchOrigin(
+        data.searchOrigin.lat,
+        data.searchOrigin.lon,
+        data.searchOrigin.label,
+      );
+    } else {
+      state.results = data;
+    }
     const reviewsQuery = await reviewsMetaDataQueryBuilder();
     if (!isAdminMode && reviewsQuery) {
       const reviewsResponse = await fetch(
@@ -372,6 +383,7 @@ async function fetchAndRenderResults() {
   } catch (error) {
     elements.matchCount.textContent = "Unable to load results";
     elements.noResults.textContent =
+      error.message ??
       "We could not load location data. Please refresh and try again.";
     elements.noResults.classList.remove("d-none");
     console.error(error);
@@ -448,9 +460,14 @@ function initSearchBar(categories, onCategoryChange) {
   }
 }
 
-function setOrigin(lat, lon, label) {
+function updateSearchOrigin(lat, lon, label) {
   state.searchOrigin = { lat, lon, label };
   elements.locationStatus.textContent = `Searching near ${label}.`;
+  updateMap();
+}
+
+function setOrigin(lat, lon, label) {
+  updateSearchOrigin(lat, lon, label);
   fetchAndRenderResults();
 }
 
@@ -482,6 +499,21 @@ async function deleteLocation(locationId, index, locationName) {
   }
 }
 
+function handleZipInput(debouncedFetch) {
+  const zip = elements.zipCode.value.trim();
+
+  if (zip.length === 0) {
+    state.searchOrigin = { ...DEFAULT_SEARCH_ORIGIN };
+    elements.locationStatus.textContent = `Searching near ${state.searchOrigin.label}.`;
+    debouncedFetch();
+    return;
+  }
+
+  if (zip.length === 5) {
+    debouncedFetch();
+  }
+}
+
 function bindEvents(debouncedFetch) {
   elements.searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -490,7 +522,7 @@ function bindEvents(debouncedFetch) {
   elements.searchBar.addEventListener("input", debouncedFetch);
 
   elements.sortSelect.addEventListener("change", debouncedFetch);
-  elements.zipCode.addEventListener("input", debouncedFetch);
+  elements.zipCode.addEventListener("input", () => handleZipInput(debouncedFetch));
   elements.distanceRange.addEventListener("input", () => {
     updateDistanceLabel();
     debouncedFetch();
@@ -532,6 +564,7 @@ function bindEvents(debouncedFetch) {
       return;
     }
 
+    elements.zipCode.value = "";
     elements.locationStatus.textContent = "Detecting your location...";
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -544,7 +577,11 @@ function bindEvents(debouncedFetch) {
       () => {
         elements.locationStatus.textContent =
           "Unable to detect location. Using Boston, MA instead.";
-        state.searchOrigin = { ...DEFAULT_SEARCH_ORIGIN };
+        updateSearchOrigin(
+          DEFAULT_SEARCH_ORIGIN.lat,
+          DEFAULT_SEARCH_ORIGIN.lon,
+          DEFAULT_SEARCH_ORIGIN.label,
+        );
         debouncedFetch();
       },
     );
