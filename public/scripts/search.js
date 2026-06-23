@@ -140,7 +140,9 @@ function buildLocationsQuery() {
   const selectedLocationTypes = getSelectedLocationTypes();
   if (selectedLocationTypes.length === 0) {
     params.set("locationType", "");
-  } else if (selectedLocationTypes.length < Object.keys(LOCATION_TYPE_LABELS).length) {
+  } else if (
+    selectedLocationTypes.length < Object.keys(LOCATION_TYPE_LABELS).length
+  ) {
     params.set("locationType", selectedLocationTypes.join(","));
   }
   params.set("maxDistance", elements.distanceRange.value);
@@ -318,17 +320,10 @@ function renderResults() {
 }
 
 async function reviewsMetaDataQueryBuilder() {
-  let urlParams = undefined;
   if ((await state.results.length) > 0) {
-    urlParams = new URLSearchParams();
-    urlParams.set(
-      `business_ids`,
-      (await state.results)
-        .map((location) => location._id)
-        .reduce((str, id) => `${str}_${id}`),
-    );
+    return (await state.results).map((location) => location._id);
   }
-  return urlParams;
+  return undefined;
 }
 
 async function parseReviewsMetaData(reviewsMetaData) {
@@ -350,7 +345,9 @@ async function fetchAndRenderResults() {
     const response = await fetch(`/api/locations?${query}`);
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error ?? `Failed to load locations (${response.status})`);
+      throw new Error(
+        data.error ?? `Failed to load locations (${response.status})`,
+      );
     }
 
     if (data.searchOrigin) {
@@ -365,9 +362,13 @@ async function fetchAndRenderResults() {
     }
     const reviewsQuery = await reviewsMetaDataQueryBuilder();
     if (!isAdminMode && reviewsQuery) {
-      const reviewsResponse = await fetch(
-        `${REVIEWS_METADATA_URL}?${reviewsQuery}`,
-      );
+      const reviewsResponse = await fetch(`${REVIEWS_METADATA_URL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reviewsQuery),
+      });
 
       if (!reviewsResponse.ok) {
         throw new Error(`Failed to load reviews (${reviewsResponse.status})`);
@@ -539,7 +540,9 @@ function bindEvents(debouncedFetch) {
   elements.searchBar.addEventListener("input", debouncedFetch);
 
   elements.sortSelect.addEventListener("change", debouncedFetch);
-  elements.zipCode.addEventListener("input", () => handleZipInput(debouncedFetch));
+  elements.zipCode.addEventListener("input", () =>
+    handleZipInput(debouncedFetch),
+  );
   elements.distanceRange.addEventListener("input", () => {
     updateDistanceLabel();
     debouncedFetch();

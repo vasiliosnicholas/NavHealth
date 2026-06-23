@@ -11,6 +11,7 @@ import {
 } from "../data/reviewsCollectionOperations.js";
 
 const reviewsRouter = express.Router();
+reviewsRouter.use(express.urlencoded({ extended: true }));
 
 const UPDATE_OPERATIONS = new Set(["$inc", "$set"]);
 
@@ -85,10 +86,27 @@ reviewsRouter.use("/GetReviews/", async (req, res, next) => {
 });
 reviewsRouter.get("/GetReviews/", getReviewsRoute);
 
+reviewsRouter.post("/GetReviewsMetaData/", async (req, res) => {
+  const business_ids = req.body;
+  console.log(business_ids);
+  if (!business_ids) {
+    res
+      .status(501)
+      .send("You must request reviews metadata for a specific business!");
+  } else {
+    const query = { business_id: { $in: business_ids } };
+    try {
+      const reviewsMetaData = await getReviewsMetaData(query);
+      res.json(reviewsMetaData);
+    } catch (error) {
+      console.error("Error fetching reviews metadata: ", error);
+      res.status(500).send("Error fetching reviews metadata!", error);
+    }
+  }
+});
+
 reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
-  const business_ids = req.query.business_ids
-    ? req.query.business_ids
-    : req.query.business_id;
+  const business_ids = req.query.business_id;
   const id = req.query.id;
   if (!business_ids && !id) {
     res
@@ -96,7 +114,7 @@ reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
       .send("You must request reviews metadata for a specific business!");
   } else {
     const query = business_ids
-      ? { business_id: { $in: business_ids.split("_") } }
+      ? { business_id: { $in: [business_ids] } }
       : { _id: id };
     try {
       const reviewsMetaData = await getReviewsMetaData(query);
