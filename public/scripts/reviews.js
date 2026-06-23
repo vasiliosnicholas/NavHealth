@@ -278,7 +278,7 @@ function genReviews() {
             ? (reviewsDocument.average_rating * reviewsDocument.num_reviews -
                 rating) /
               --reviewsDocument.num_reviews
-            : 0;
+            : --reviewsDocument.num_reviews;
         await updateReviewsMetaData(
           reviewsDocument._id,
           "$set",
@@ -291,9 +291,9 @@ function genReviews() {
           "num_reviews",
           -1,
         );
-        ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.num_reviews > 1 ? reviewsDocument.average_rating.toFixed(FLOAT_PRECISION) : "unrated"}`;
+        ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.num_reviews > 0 ? reviewsDocument.average_rating.toFixed(FLOAT_PRECISION) : "unrated"}`;
         console.log(reviewsDocument.num_reviews);
-        if (reviewsDocument.num_reviews <= 1) {
+        if (reviewsDocument.num_reviews <= 0) {
           reviewsParentElement.innerHTML = "All reviews deleted!";
           reviewsParentElement.classList.add("text-center");
         }
