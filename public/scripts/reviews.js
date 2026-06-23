@@ -10,6 +10,7 @@ const ratingElement = document.getElementById("average-rating");
 const dropDown = document.getElementById("dropdown-filter");
 const dropDownBtnName = document.getElementById("filter-dropdown-btn-name");
 const adminAnchor = document.querySelector(".admin");
+const adminModeBadge = document.querySelector(".admin-mode-badge");
 
 const GET_REVIEWS_URL = "/api/Reviews/GetReviews";
 const UPDATE_REVIEW_URL = "/api/Reviews/UpdateReview";
@@ -312,6 +313,7 @@ function genQueryParam() {
 
 function handleAdmin() {
   if (params.has("admin")) {
+    adminModeBadge.classList.remove("d-none");
     adminAnchor.innerHTML = "Stop Managing Reviews";
     adminAnchor.classList.add("active");
     adminAnchor.href = `${REVIEWS_URL}${genQueryParam()}`;
