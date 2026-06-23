@@ -62,7 +62,6 @@ reviewsRouter.post("/CreateReview/", async (req, res) => {
   const review = await req.body;
   const business_id = req.query.business_id;
   const id = req.query.id;
-
   if (!business_id && !id) {
     res.status(501).send("You must list pass all review attributes!");
   } else {

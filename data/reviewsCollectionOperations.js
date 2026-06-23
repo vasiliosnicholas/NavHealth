@@ -76,7 +76,6 @@ export function deleteReviewsDocument(query) {
 export function createReview(query, review) {
   parseObjectId(query);
   parseObjectId(review);
-  console.log(review);
   reviewsCollection.updateOne(query, { $push: { reviews: review } });
 }
 
@@ -89,6 +88,5 @@ export function updateReview(query, update, options = undefined) {
 export function deleteReview(query, deleteQuery) {
   parseObjectId(query);
   parseObjectId(deleteQuery);
-
   reviewsCollection.updateOne(query, { $pull: { reviews: deleteQuery } });
 }
