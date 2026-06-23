@@ -121,7 +121,7 @@ async function deleteReview(review_id) {
 
 function genReviews() {
   reviewsDocument.average_rating = parseFloat(reviewsDocument.average_rating);
-  ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.average_rating.toFixed(FLOAT_PRECISION)}`;
+  ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.num_reviews > 0 ? reviewsDocument.average_rating.toFixed(FLOAT_PRECISION) : "Unrated"}`;
   for (const description of descriptions) {
     description.classList.remove("placeholder");
     description.innerHTML = `Reviews for ${reviewsDocument.business_name}`;
@@ -140,6 +140,9 @@ function genReviews() {
   thumbnail.classList.remove("placeholder");
   reviewsParentElement.innerHTML =
     reviewsDocument.reviews.length > 0 ? `` : "No reviews found";
+  if (reviewsDocument.reviews.length <= 0){
+    reviewsParentElement.classList.add("text-center");
+  }
   for (const review of reviewsDocument.reviews) {
     const reviewSection = document.createElement("section");
     reviewSection.className = `list-group-item`;
