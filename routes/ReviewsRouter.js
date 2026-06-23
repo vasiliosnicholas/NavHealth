@@ -56,7 +56,7 @@ reviewsRouter.use("/GetReviews/", async (req, res, next) => {
       : { _id: review_id };
     try {
       const reviews = await getReviews(query);
-      if (reviews !== null && Array.isArray(reviews) && reviews.length > 0) {
+      if (reviews !== null) {
         next("route");
       } else if (business_id && (reviews == null || !reviews.ok)) {
         const location = await getLocation(business_id);
