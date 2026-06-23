@@ -99,7 +99,7 @@ function formatAddress(address) {
 }
 
 function starIcon() {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star-fill" viewBox="0 1 18 18">
   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
 </svg>`;
 }
@@ -129,23 +129,29 @@ function globeIcon() {
 </svg>`;
 }
 
-function getSelectedLocationType() {
-  return (
-    document.querySelector('input[name="location-type"]:checked')?.value ?? ""
-  );
+function getSelectedLocationTypes() {
+  return [
+    ...document.querySelectorAll('input[name="location-type"]:checked'),
+  ].map((input) => input.value);
 }
 
 function buildLocationsQuery() {
   const params = new URLSearchParams();
-  params.set("locationType", getSelectedLocationType());
-  params.set("lat", String(state.searchOrigin.lat));
-  params.set("lon", String(state.searchOrigin.lon));
+  const selectedLocationTypes = getSelectedLocationTypes();
+  if (selectedLocationTypes.length === 0) {
+    params.set("locationType", "");
+  } else if (selectedLocationTypes.length < Object.keys(LOCATION_TYPE_LABELS).length) {
+    params.set("locationType", selectedLocationTypes.join(","));
+  }
   params.set("maxDistance", elements.distanceRange.value);
   params.set("sort", elements.sortSelect.value);
 
   const zip = elements.zipCode.value.trim();
-  if (zip) {
+  if (zip.length === 5) {
     params.set("zip", zip);
+  } else {
+    params.set("lat", String(state.searchOrigin.lat));
+    params.set("lon", String(state.searchOrigin.lon));
   }
 
   if (state.selectedInsurances.size > 0) {
@@ -342,11 +348,21 @@ async function fetchAndRenderResults() {
   try {
     const query = buildLocationsQuery();
     const response = await fetch(`/api/locations?${query}`);
+    const data = await response.json();
     if (!response.ok) {
-      throw new Error(`Failed to load locations (${response.status})`);
+      throw new Error(data.error ?? `Failed to load locations (${response.status})`);
     }
 
-    state.results = await response.json();
+    if (data.searchOrigin) {
+      state.results = data.locations ?? [];
+      updateSearchOrigin(
+        data.searchOrigin.lat,
+        data.searchOrigin.lon,
+        data.searchOrigin.label,
+      );
+    } else {
+      state.results = data;
+    }
     const reviewsQuery = await reviewsMetaDataQueryBuilder();
     if (!isAdminMode && reviewsQuery) {
       const reviewsResponse = await fetch(
@@ -365,6 +381,7 @@ async function fetchAndRenderResults() {
   } catch (error) {
     elements.matchCount.textContent = "Unable to load results";
     elements.noResults.textContent =
+      error.message ??
       "We could not load location data. Please refresh and try again.";
     elements.noResults.classList.remove("d-none");
     console.error(error);
@@ -441,9 +458,14 @@ function initSearchBar(categories, onCategoryChange) {
   }
 }
 
-function setOrigin(lat, lon, label) {
+function updateSearchOrigin(lat, lon, label) {
   state.searchOrigin = { lat, lon, label };
   elements.locationStatus.textContent = `Searching near ${label}.`;
+  updateMap();
+}
+
+function setOrigin(lat, lon, label) {
+  updateSearchOrigin(lat, lon, label);
   fetchAndRenderResults();
 }
 
@@ -494,6 +516,21 @@ async function deleteReviews(locationId) {
   }
 }
 
+function handleZipInput(debouncedFetch) {
+  const zip = elements.zipCode.value.trim();
+
+  if (zip.length === 0) {
+    state.searchOrigin = { ...DEFAULT_SEARCH_ORIGIN };
+    elements.locationStatus.textContent = `Searching near ${state.searchOrigin.label}.`;
+    debouncedFetch();
+    return;
+  }
+
+  if (zip.length === 5) {
+    debouncedFetch();
+  }
+}
+
 function bindEvents(debouncedFetch) {
   elements.searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -502,7 +539,7 @@ function bindEvents(debouncedFetch) {
   elements.searchBar.addEventListener("input", debouncedFetch);
 
   elements.sortSelect.addEventListener("change", debouncedFetch);
-  elements.zipCode.addEventListener("input", debouncedFetch);
+  elements.zipCode.addEventListener("input", () => handleZipInput(debouncedFetch));
   elements.distanceRange.addEventListener("input", () => {
     updateDistanceLabel();
     debouncedFetch();
@@ -545,6 +582,7 @@ function bindEvents(debouncedFetch) {
       return;
     }
 
+    elements.zipCode.value = "";
     elements.locationStatus.textContent = "Detecting your location...";
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -557,7 +595,11 @@ function bindEvents(debouncedFetch) {
       () => {
         elements.locationStatus.textContent =
           "Unable to detect location. Using Boston, MA instead.";
-        state.searchOrigin = { ...DEFAULT_SEARCH_ORIGIN };
+        updateSearchOrigin(
+          DEFAULT_SEARCH_ORIGIN.lat,
+          DEFAULT_SEARCH_ORIGIN.lon,
+          DEFAULT_SEARCH_ORIGIN.label,
+        );
         debouncedFetch();
       },
     );
