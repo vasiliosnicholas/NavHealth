@@ -238,8 +238,7 @@ function renderNormalActions(location, reviewsMetaData) {
   const website = location.websiteLink ?? "#";
   const reviewsFullUrl = reviewsMetaData
     ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
-    : `${REVIEWS_BASE_URL}`;
-
+    : `${REVIEWS_BASE_URL}?business_id=${location._id}`;
   return `
     <a class="btn btn-call" href="tel:${phone.replace(/[^\d+]/g, "")}">
       ${phoneIcon()} Call
@@ -271,6 +270,7 @@ function renderResultCard(location, index) {
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
     : "";
+  console.log(reviewsMetaData);
   const actionsHtml = isAdminMode
     ? renderAdminActions(location)
     : renderNormalActions(location, reviewsMetaData);
