@@ -77,10 +77,11 @@
       class="d-flex flex-column flex-fill justify-content-center align-content-center bg-secondary add-background vh-100"
     >
       <div class="container-fluid w-100 hero-glass rounded-2">
-        <div class="container-fluid bg-white p-5 rounded-2 w-75 mb-5" id="form-heading">
-          <div
-            class="row justify-content-start align-items-center text-start"
-          >
+        <div
+          class="container-fluid bg-white p-5 rounded-2 w-75 mb-5"
+          id="form-heading"
+        >
+          <div class="row justify-content-start align-items-center text-start">
             <div class="col-1 result-thumb"></div>
             <h1 class="description col placeholder rounded-2">
               Add a Review for
@@ -100,6 +101,7 @@
                   class="form-control"
                   id="email-input"
                   placeholder="name@example.com"
+                  required
                 />
               </div>
               <div class="mb-3">
@@ -109,6 +111,7 @@
                   class="form-control"
                   id="username-input"
                   placeholder="Enter your username"
+                  required
                 />
               </div>
             </div>
@@ -122,11 +125,17 @@
                   class="form-control"
                   id="review-title"
                   placeholder="Enter your title"
+                  required
                 />
               </div>
               <div class="mb-3">
                 <label for="visit-date" class="form-label">Visit Date</label>
-                <input type="date" class="form-control" id="visit-date" />
+                <input
+                  type="date"
+                  class="form-control"
+                  id="visit-date"
+                  required
+                />
               </div>
 
               <div class="mb-3">
@@ -155,6 +164,7 @@
                 id="review-body"
                 placeholder="Enter your review"
                 rows="3"
+                required
               ></textarea>
             </div>
 
