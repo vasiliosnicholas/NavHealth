@@ -36,6 +36,7 @@ async function getReviewsMetaData() {
 
 async function submitReview() {
   const submissionDate = new Date();
+  const visit_date = dateInput.value.split("-");
   const review = {
     _id: null,
     review_title: titleInput.value,
@@ -43,7 +44,7 @@ async function submitReview() {
     rating: parseInt(ratingSlider.value),
     reviewer_username: usernameInput.value,
     reviewer_email: emailInput.value,
-    visit_date: dateInput.value,
+    visit_date: `${parseInt(visit_date[1])}/${parseInt(visit_date[2])}/${parseInt(visit_date[0])}`,
     submitted_at: `${submissionDate.getMonth() + 1}/${submissionDate.getDate()}/${submissionDate.getFullYear()}`,
     num_likes: 0,
     num_dislikes: 0,
