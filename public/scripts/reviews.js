@@ -270,9 +270,11 @@ function genReviews() {
       deleteButton.addEventListener("click", async () => {
         const rating = review.rating;
         reviewsDocument.average_rating =
-          (reviewsDocument.average_rating * reviewsDocument.num_reviews -
-            rating) /
-          --reviewsDocument.num_reviews;
+          reviewsDocument.num_reviews > 1
+            ? (reviewsDocument.average_rating * reviewsDocument.num_reviews -
+                rating) /
+              --reviewsDocument.num_reviews
+            : 0;
         await updateReviewsMetaData(
           reviewsDocument._id,
           "$set",
