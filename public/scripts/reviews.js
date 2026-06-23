@@ -290,7 +290,12 @@ function genReviews() {
           "num_reviews",
           -1,
         );
-        ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.average_rating.toFixed(FLOAT_PRECISION)}`;
+        ratingElement.innerHTML = `Overall Rating: ${reviewsDocument.num_reviews > 1 ? reviewsDocument.average_rating.toFixed(FLOAT_PRECISION) : "unrated"}`;
+        console.log(reviewsDocument.num_reviews);
+        if (reviewsDocument.num_reviews <= 1) {
+          reviewsParentElement.innerHTML = "All reviews deleted!";
+          reviewsParentElement.classList.add("text-center");
+        }
         await deleteReview(review._id);
         delete reviewsDocument[review._id];
         delete reviewSection.remove();
