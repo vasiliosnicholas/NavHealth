@@ -126,29 +126,6 @@ reviewsRouter.post("/CreateReview/", async (req, res) => {
   }
 });
 
-reviewsRouter.post("/CreateReviewsDocument", async (req, res) => {
-  const business_id = req.query.business_id;
-  const business_name = req.query.business_name;
-  if (!business_id || !business_name) {
-    res.status(501).send("You must specify a business name and business id!");
-  } else {
-    const document = {
-      business_id: business_id,
-      business_name: business_name,
-      reviews: [],
-      num_reviews: 0,
-      average_rating: 0,
-    };
-    try {
-      await createReviewsDocument(document);
-      res.send("Successfully created reviews document!");
-    } catch (error) {
-      console.error(`Error creating reviews document:`, error);
-      res.status(500).send(`Error creatings reviews document:`, error);
-    }
-  }
-});
-
 reviewsRouter.delete("/DeleteReviewsDocument/", async (req, res) => {
   const business_id = req.query.business_id;
   const id = req.query.id;
