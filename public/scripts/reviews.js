@@ -79,7 +79,7 @@ export function toggleAction(action, reverseAction = undefined) {
 
 async function getReviews() {
   params = new URLSearchParams(window.location.search);
-  const response = await fetch(`${GET_REVIEWS_URL}?id=${params.get("id")}`);
+  const response = await fetch(`${GET_REVIEWS_URL}?${params}`);
 
   if (!response.ok) {
     console.error(
