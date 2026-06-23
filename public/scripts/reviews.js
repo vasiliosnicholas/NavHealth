@@ -34,10 +34,16 @@ function comparator(field, parser, flip = false) {
 
 function popularityComparator(flip = false) {
   return (r1, r2) => {
-    const r1Sum = parseFloat(r1.num_likes) / parseFloat(r1.num_dislikes);
-    const r2Sum = parseFloat(r2.num_likes) / parseFloat(r2.num_dislikes);
-    if (r1Sum === r2Sum) return 0;
-    const comp = r1Sum > r2Sum ? -1 : 1;
+    const r1Ratio =
+      parseFloat(r1.num_dislikes) > 0
+        ? parseFloat(r1.num_likes) / parseFloat(r1.num_dislikes)
+        : parseFloat(r1.num_likes);
+    const r2Ratio =
+      parseFloat(r2.num_dislikes) > 0
+        ? parseFloat(r2.num_likes) / parseFloat(r2.num_dislikes)
+        : parseFloat(r2.num_likes);
+    if (r1Ratio === r2Ratio) return 0;
+    const comp = r1Ratio > r2Ratio ? -1 : 1;
     if (flip) return -1 * comp;
     return comp;
   };
