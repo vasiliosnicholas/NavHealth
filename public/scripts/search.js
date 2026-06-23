@@ -263,10 +263,9 @@ function renderResultCard(location, index) {
   const reviewsFullUrl = reviewsMetaData
     ? `${REVIEWS_BASE_URL}?id=${reviewsMetaData._id}`
     : null;
-  const ratingBadge =
-    !isAdminMode && reviewsMetaData && reviewsMetaData.num_reviews > 0
-      ? `<a class="result-badge align-items-end" style="text-decoration:none" href="${reviewsFullUrl}">${starIcon()}Rating: ${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small></a>`
-      : "";
+  const ratingBadge = !isAdminMode
+    ? `<a class="result-badge align-items-end" style="text-decoration:none" href="${reviewsFullUrl}">${starIcon()}Rating: ${reviewsMetaData && reviewsMetaData.num_reviews > 0 ? `${parseFloat(reviewsMetaData.average_rating).toFixed(FLOAT_PRECISION)} <small> from ${reviewsMetaData.num_reviews} reviews</small>` : `unrated`}</a>`
+    : "";
   const adminContactBadges = isAdminMode
     ? renderAdminContactBadges(location)
     : "";
