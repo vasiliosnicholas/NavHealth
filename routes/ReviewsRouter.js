@@ -86,7 +86,9 @@ reviewsRouter.use("/GetReviews/", async (req, res, next) => {
 reviewsRouter.get("/GetReviews/", getReviewsRoute);
 
 reviewsRouter.get("/GetReviewsMetaData/", async (req, res) => {
-  const business_ids = req.query.business_ids;
+  const business_ids = req.query.business_ids
+    ? req.query.business_ids
+    : req.query.business_id;
   const id = req.query.id;
   if (!business_ids && !id) {
     res
@@ -138,7 +140,7 @@ reviewsRouter.post("/CreateReviewsDocument", async (req, res) => {
       average_rating: 0,
     };
     try {
-      createReviewsDocument(document);
+      await createReviewsDocument(document);
       res.send("Successfully created reviews document!");
     } catch (error) {
       console.error(`Error creating reviews document:`, error);
