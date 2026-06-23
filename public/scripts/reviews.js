@@ -90,8 +90,7 @@ async function getReviews() {
   }
   reviewsDocument = await response.json();
   postReviewButton.href = `${POST_REVIEW_URL}?${params}`;
-  if (await reviewsDocument == null)
-    return false;
+  if ((await reviewsDocument) == null) return false;
   return true;
 }
 
@@ -140,7 +139,7 @@ function genReviews() {
   thumbnail.classList.remove("placeholder");
   reviewsParentElement.innerHTML =
     reviewsDocument.reviews.length > 0 ? `` : "No reviews found";
-  if (reviewsDocument.reviews.length <= 0){
+  if (reviewsDocument.reviews.length <= 0) {
     reviewsParentElement.classList.add("text-center");
   }
   for (const review of reviewsDocument.reviews) {
@@ -300,13 +299,19 @@ function genReviews() {
   }
 }
 
+function genQueryParam() {
+  return params.has("id")
+    ? `?id=${params.get("id")}`
+    : `?business_id=${params.get("business_id")}`;
+}
+
 function handleAdmin() {
   if (params.has("admin")) {
     adminAnchor.innerHTML = "Stop Managing Reviews";
     adminAnchor.classList.add("active");
-    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}`;
+    adminAnchor.href = `${REVIEWS_URL}${genQueryParam()}`;
   } else {
-    adminAnchor.href = `${REVIEWS_URL}?id=${params.get("id")}&admin`;
+    adminAnchor.href = `${REVIEWS_URL}${genQueryParam()}&admin`;
   }
 }
 
