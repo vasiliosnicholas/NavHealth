@@ -1,4 +1,4 @@
-import { getDb } from "../backend/database/db.js";
+import { getDb } from "../database/db.js";
 
 const LOCATIONS_COLLECTION =
   process.env.MONGODB_LOCATIONS_COLLECTION ?? "locations";

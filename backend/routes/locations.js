@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getDb } from "../backend/database/db.js";
+import { getDb } from "../database/db.js";
 import { geocodeAddress } from "../utils/geocodeMaps.js";
 
 const LOCATIONS_COLLECTION =
