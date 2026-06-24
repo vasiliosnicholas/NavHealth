@@ -33,9 +33,15 @@ app.run = async () => {
   app.server.use(express.static("public"));
   app.server.use("/api/Reviews/", reviewsRouter);
 
-  app.server.listen(PORT, HOST, () => {
-    console.log(`NavHealth server running on http://${HOST}:${PORT}`);
-  });
+  if (process.env.NODE_ENV !== "production") {
+    app.server.listen(PORT, HOST, () => {
+      console.log(`NavHealth server running on http://${HOST}:${PORT}`);
+    });
+  } else {
+    app.server.listen(PORT, () => {
+      console.log(`NavHealth server running on ${PORT}`);
+    });
+  }
 };
 
 export default app;
