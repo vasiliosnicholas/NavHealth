@@ -3,7 +3,7 @@
 **NavHealth** is a full-stack application that aggregates and displays information about healthcare resources, serving as a custom search engine focused on making it easy to find relevant health services near the end-user's location. It offers more information than a Google search or yelp listing, allowing users to search by healthcare services offered and filter locations by the insurances they accept. It also supports rating and reviewing healthcare businesses. Overall, NavHealth is designed to be a reliable endpoint for users seeking healthcare services to find the best facility to receive care at.
 NavHealth was built with HTML5, CSS3, ES6, Node.js, Express, Bootstrap 5, and MongoDB.
 
-For our live demo, our database hosts health facility locations with mock data for certain fields. The reviews collection is entirely composed of mock data.
+For our live demo, our database hosts health facility locations in Massachusetts with mock data for certain fields. The reviews collection is entirely composed of mock data.
 
 > _Landing page of NavHealth._
 > ![Landing Page Screenshot](./landing.jpeg)
@@ -23,7 +23,7 @@ For our live demo, our database hosts health facility locations with mock data f
 ## Live Demo and Documentation
 
 - **[Deployed Site Link](https://navhealth.onrender.com/)**
-- add video walk-through link
+- **[Live Demo Video Walkthrough](https://youtu.be/_gTMdqCJ06c)**
 - **[Project slides](https://docs.google.com/presentation/d/1lVG5qM9A-txAdIopvvzvcrpaC5UkR5t9ZHaHdSgv4-E/edit?usp=sharing)**
 - **[Design Document](https://docs.google.com/document/d/15TbOX519Nbn29X7LkZewL2eckoyTnjrVooJVtpLpPy0/edit?usp=sharing)**
 
@@ -31,18 +31,24 @@ For our live demo, our database hosts health facility locations with mock data f
 - Aryan Yadav: Search full-stack.
 - Vasilios Nicholas: Reviews full-stack.
 
+
 ## Project Objective
 The goal of NavHealth is to make finding healthcare services simpler and more informative than a typical Google or Yelp search. Users can search for health facilities by name, location, or services offered, filter results by accepted insurance providers, and read or post reviews — all in one place.
 
-This project was created as the second project for [CS5610 Web Development](https://johnguerra.co/classes/webDevelopment_online_summer_2026/) at Northeastern University Summer 2026.
+This project was created as the second project for [CS5610 Web Development](https://johnguerra.co/classes/webDevelopment_online_summer_2026/) at Northeastern University, during the Summer 2026 semester.
 
 From a technical standpoint, the project was built to practice full-stack web development using Node.js, Express, MongoDB, and vanilla JavaScript with client-side rendering. Specific objectives include:
 
 - Building a multi-page application where each page is served as its own HTML file with its own CSS and JS modules.
 - Implementing a REST API with Express that supports full CRUD operations across two MongoDB collections: `locations` and `reviews`.
-- Using client-side JavaScript (no frontend framework) to fetch data from the API and dynamically render UI elements.
+- Using client-side JavaScript to fetch data from the API and dynamically render UI elements.
 - Integrating a third-party geocoding API to support location-aware search.
 - Deploying the application to a public server so it is accessible to real users.
+
+## App Instructions
+Navigating to NavHealth brings you to the landing page, where you can perform an initial search for health services, locations, or health facility names. Submitting the initial search brings you to the landing page, where you can refine the search based on your zip code, or use your current location based on your browser's built-in geocoding api. You can further refine the search radius, filter by accepted health insurances, and filter by location type (hospital, urgent care, or retail clinic). Each listing displays the name of the business, its address, its business hours, the healthcare services it offers, and its average rating. On the search page, the `Manage Listings` button lets you edit or delete a location from our database, this is intended for admin users.
+You can click on the `Visit Reviews` button for a business to see the reviews for said business. You can sort the reviews by recency of posting, rating, and popularity. You can choose to like or dislike each review, which updates the relative fields in our reviews collection database. The `Manage Reviews` buttons allows admin users to delete reviews from the reviews collection.
+The top left button of the reviews page, `Post Review` lets you post your own review. Successfully submitting redirects you back to the reviews page for the business after 5 seconds, displaying your review at the very top, if it was the most recent one posted.
 
 ## Project Structure
 ```
@@ -123,9 +129,9 @@ NavHealth
    npm install
    ```
 4. **Install MongoDB on your system using a container or natively and start the MongoDB instance.**
-5. **Add our collections from [./data/processed/](https://github.com/vasiliosnicholas/NavHealth/tree/main/data/processed) to a locally deployed MongoDB database.**
-6. **Go to [https://geocode.maps.co/](https://geocode.maps.co/) and create an API key.**
-7. **Using [.env.example](https://github.com/vasiliosnicholas/NavHealth/blob/main/.env.example) for the required environmental variables, fill out:**
+5. **Add our collections from [`./data/processed/`](https://github.com/vasiliosnicholas/NavHealth/tree/main/data/processed) to a locally deployed MongoDB database.**
+6. **Go to [`https://geocode.maps.co/`](https://geocode.maps.co/) and create an API key.**
+7. **Using [`.env.example`](https://github.com/vasiliosnicholas/NavHealth/blob/main/.env.example) for the required environmental variables, fill out:**
    ```bash
     MONGODB_URI=<mongodb://localhost:27017 or your MongoDB cluster URI>
     MONGODB_DB_NAME=<your database name here>
@@ -142,6 +148,15 @@ NavHealth
       ```bash
       node ./backend/index.js
       ```
+
+## Third-Party APIs & Libraries
+
+- **[geocode.maps.co](https://geocode.maps.co/)** — Geocoding API used for making entering business coordinates optional on the `List a Business Page`.
+- **[MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/)** — Official driver used to connect to and query MongoDB collections.
+- **[Express](https://expressjs.com/)** — Web framework for Node.js used to build the REST API and serve static files.
+- **[Bootstrap 5](https://getbootstrap.com/)** — CSS/JS framework used for responsive layout and UI components.
+- **[Mockaroo](https://www.mockaroo.com/)** — Used to generate mock review data for the `reviews` collection.
+
 ## Gen AI Usage Disclosure
 
 - Vasilios Nicholas:
