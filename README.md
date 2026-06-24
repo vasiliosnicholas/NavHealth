@@ -7,6 +7,21 @@ NavHealth was built with HTML5, CSS3, ES6, Express, Bootstrap 5, and MongoDB.
 
 For our live demo, our database hosts health facility locations with mock data for certain fields. The reviews collection is entirely composed of mock data.
 
+> *Landing page of NavHealth.*
+![Landing Page Screenshot](./landing.jpeg)
+> *Search page of NavHealth.*
+![Search Page Screenshot](./search.jpeg)
+> *Reviews page of NavHealth.*
+![Reviews Page Screenshot](./reviews.jpeg)
+> *List Business page of NavHealth.*
+![List Business Page Screenshot](./list-business.jpeg)
+> *Post Review page of NavHealth.*
+![Post Review Page Screenshot](./post-review.jpeg)
+> *Admin Search page of NavHealth.*
+![Admin Search Page Screenshot](./admin-search.jpeg)
+> *Admin Reviews page of NavHealth.*
+![Admin Reviews Page Screenshot](./admin-reviews.jpeg)
+
 ## Live Demo and Documentation
 
 - **[Deployed Site Link](https://navhealth.onrender.com/)**
