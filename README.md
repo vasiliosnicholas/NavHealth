@@ -28,10 +28,10 @@ NavHealth
 ├── package.json                                #lists project dependencies.
 ├── package-lock.json
 ├── README.md                                   #project README
-├── backend
+├── src
 │   ├── app.js                                  #Creates an instance of the express server, adds all routes, and starts the server.
 │   ├── dev.js                                  #Runs our app using livereload, which hard refreshes our pages in a browser upon static file changes.
-│   ├── main.js                                 #Invokes imports app from app.js and invokes app.run() to run our app.
+│   ├── index.js                                #Invokes imports app from app.js and invokes app.run() to run our app.
 │   ├── database
 │   │   ├── db.js                               #Singleton pattern for connecting to our MongoDB database using MongoClient.
 │   │   └── reviewsCollectionOperations.js      #Service Module for interacting with our MongoDB singleton in db.js.
