@@ -1,5 +1,5 @@
 import express from "express";
-import { connectDb } from "./db.js";
+import { connectDb } from "./database/db.js";
 import { getCategories } from "./routes/categories.js";
 import { getInsurances } from "./routes/insurances.js";
 import {

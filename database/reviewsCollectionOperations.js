@@ -1,4 +1,4 @@
-import { isConnected, connectDb, getDb } from "../db.js";
+import { isConnected, connectDb, getDb } from "./db.js";
 import { ObjectId } from "mongodb";
 
 process.loadEnvFile();

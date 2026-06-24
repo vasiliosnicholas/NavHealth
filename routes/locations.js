@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getDb } from "../db.js";
+import { getDb } from "../database/db.js";
 import { geocodeAddress } from "../utils/geocodeMaps.js";
 
 const LOCATIONS_COLLECTION =
@@ -248,8 +248,7 @@ function parseLocationId(id) {
 
 async function resolveZipGeocode(params) {
   const isFiveDigitZip = /^\d{5}$/.test(params.zip);
-  const hasClientCoords =
-    params.lat !== undefined && params.lon !== undefined;
+  const hasClientCoords = params.lat !== undefined && params.lon !== undefined;
 
   if (!isFiveDigitZip || hasClientCoords) {
     return null;
@@ -308,7 +307,9 @@ export async function getLocations(req, res) {
     const params = parseQueryParams(req.query);
     const geocodeError = await resolveZipGeocode(params);
     if (geocodeError) {
-      return res.status(geocodeError.status).json({ error: geocodeError.error });
+      return res
+        .status(geocodeError.status)
+        .json({ error: geocodeError.error });
     }
 
     const collection = getDb().collection(LOCATIONS_COLLECTION);
