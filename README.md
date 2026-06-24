@@ -149,13 +149,15 @@ NavHealth
       node ./backend/index.js
       ```
 
-## Third-Party APIs & Libraries
+## Third-Party APIs & Libraries & Deployment Environments
 
 - **[geocode.maps.co](https://geocode.maps.co/)** — Geocoding API used for making entering business coordinates optional on the `List a Business Page`.
 - **[MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/)** — Official driver used to connect to and query MongoDB collections.
 - **[Express](https://expressjs.com/)** — Web framework for Node.js used to build the REST API and serve static files.
 - **[Bootstrap 5](https://getbootstrap.com/)** — CSS/JS framework used for responsive layout and UI components.
 - **[Mockaroo](https://www.mockaroo.com/)** — Used to generate mock review data for the `reviews` collection.
+- **[Render](https://render.com/) — Deployment environment for Express backend.**
+- **[MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) — Deployment environment for MongoDB database**
 
 ## Gen AI Usage Disclosure
 
