@@ -1,25 +1,26 @@
 # ![NavHealth](./public/images/favicon.png)NavHealth
 
 ## Project Description
-**NavHealth** is a full-stack application that.
+
+**NavHealth** is a full-stack application that aggregates and displays information about healthcare resources, serving as a custom search engine focused on making it easy to find relevant health services near the end-user's location. It offers more information than a Google search or yelp listing, allowing users to search by healthcare services offered and filter locations by the insurances they accept. It also supports rating and reviewing healthcare businesses. Overall, NavHealth is designed to be a reliable endpoint for users seeking healthcare services to find the best facility to receive care at.
 NavHealth was built with HTML5, CSS3, ES6, Express, Bootstrap 5, and MongoDB.
 
 For our live demo, our database hosts health facility locations with mock data for certain fields. The reviews collection is entirely composed of mock data.
 
 ## Live Demo and Documentation
-- Add deployed site link
-- add video walk-through
-- add slides link
-- add design document link.
 
+- **[Deployed Site Link](https://navhealth.onrender.com/)**
+- add video walk-through link
+- **[Project slides](https://docs.google.com/presentation/d/1lVG5qM9A-txAdIopvvzvcrpaC5UkR5t9ZHaHdSgv4-E/edit?usp=sharing)**
+- **[Design Document](https://docs.google.com/document/d/1MQpSzL3qbQXs4yLTmgZi3iF11Dt9O2r0WlpWrBq2_uk/edit?usp=sharing)**
 
 ## Authors
+
 - Aryan Yadav: Search full-stack.
 - Vasilios Nicholas: Reviews full-stack.
 
-
-
 ## Project Structure
+
 ```
 NavHealth
 ├── eslint.config.js                            #eslint config file.
@@ -36,7 +37,7 @@ NavHealth
 │   │   ├── db.js                               #Singleton pattern for connecting to our MongoDB database using MongoClient.
 │   │   └── reviewsCollectionOperations.js      #Service Module for interacting with our MongoDB singleton in db.js.
 │   ├── routes
-│   │   ├── categories.js                       
+│   │   ├── categories.js
 │   │   ├── insurances.js
 │   │   ├── locations.js
 │   │   └── ReviewsRouter.js                    #Router that contains CRUD operations for the reviews collection.
@@ -79,8 +80,9 @@ NavHealth
 ```
 
 ## Gen AI Usage Disclosure
+
 - Vasilios Nicholas:
-    - App logo and favicon generation:
-        - Model used: **GPT Image 2** via **Adobe Firefly**
-        - Prompt used: Website faveicon/logo blue-green compass with a single black stethoscope. Ensure stethoscope is anatomically accurate.
-    - **[Mockaroo](https://www.mockaroo.com/)** used for generating reviews mock data. See any of the objects in [./data/processed/reviews/json](https://github.com/vasiliosnicholas/NavHealth/blob/main/data/processed/reviews.json) to see the fields I used for generating the mock data.
+  - App logo and favicon generation:
+    - Model used: **GPT Image 2** via **Adobe Firefly**
+    - Prompt used: Website faveicon/logo blue-green compass with a single black stethoscope. Ensure stethoscope is anatomically accurate.
+  - **[Mockaroo](https://www.mockaroo.com/)** used for generating reviews mock data. See any of the objects in [./data/processed/reviews/json](https://github.com/vasiliosnicholas/NavHealth/blob/main/data/processed/reviews.json) to see the fields I used for generating the mock data.
