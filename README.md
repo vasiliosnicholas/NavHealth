@@ -25,7 +25,7 @@ For our live demo, our database hosts health facility locations with mock data f
 - **[Deployed Site Link](https://navhealth.onrender.com/)**
 - add video walk-through link
 - **[Project slides](https://docs.google.com/presentation/d/1lVG5qM9A-txAdIopvvzvcrpaC5UkR5t9ZHaHdSgv4-E/edit?usp=sharing)**
-- **[Design Document]((https://docs.google.com/document/d/15TbOX519Nbn29X7LkZewL2eckoyTnjrVooJVtpLpPy0/edit?usp=sharing))**
+- **[Design Document](https://docs.google.com/document/d/15TbOX519Nbn29X7LkZewL2eckoyTnjrVooJVtpLpPy0/edit?usp=sharing)**
 
 ## Authors
 - Aryan Yadav: Search full-stack.
