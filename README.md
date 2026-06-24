@@ -28,7 +28,7 @@ NavHealth
 ├── package.json                                #lists project dependencies.
 ├── package-lock.json
 ├── README.md                                   #project README
-├── src
+├── backend
 │   ├── app.js                                  #Creates an instance of the express server, adds all routes, and starts the server.
 │   ├── dev.js                                  #Runs our app using livereload, which hard refreshes our pages in a browser upon static file changes.
 │   ├── index.js                                #Invokes imports app from app.js and invokes app.run() to run our app.

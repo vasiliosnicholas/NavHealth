@@ -15,7 +15,8 @@
   "type": "module",
   "main": "./backend/index.js",
   "scripts": {
-    "start": "node --env-file=.env node_modules/nodemon/bin/nodemon.js ./backend/dev.js -e js,mjs,css,html,json",
+    "start" : "node ./backend/index.js",
+    "dev": "node --env-file=.env node_modules/nodemon/bin/nodemon.js ./backend/dev.js -e js,mjs,css,html,json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
