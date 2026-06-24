@@ -8,7 +8,7 @@ import {
   getReviews,
   getReviewsMetaData,
   updateReview,
-} from "../database/reviewsCollectionOperations.js";
+} from "../backend/database/reviewsCollectionOperations.js";
 
 const reviewsRouter = express.Router();
 

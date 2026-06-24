@@ -13,9 +13,9 @@
   "license": "MIT",
   "author": "Vasilios Nicholas, Aryan Yadav",
   "type": "module",
-  "main": "main.js",
+  "main": "./backend/main.js",
   "scripts": {
-    "start": "node --env-file=.env node_modules/nodemon/bin/nodemon.js dev.js -e js,mjs,css,html,json",
+    "start": "node --env-file=.env node_modules/nodemon/bin/nodemon.js ./backend/dev.js -e js,mjs,css,html,json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {

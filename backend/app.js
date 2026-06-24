@@ -1,15 +1,15 @@
 import express from "express";
 import { connectDb } from "./database/db.js";
-import { getCategories } from "./routes/categories.js";
-import { getInsurances } from "./routes/insurances.js";
+import { getCategories } from "../routes/categories.js";
+import { getInsurances } from "../routes/insurances.js";
 import {
   createLocation,
   deleteLocation,
   getLocationById,
   getLocations,
   updateLocation,
-} from "./routes/locations.js";
-import reviewsRouter from "./routes/ReviewsRouter.js";
+} from "../routes/locations.js";
+import reviewsRouter from "../routes/ReviewsRouter.js";
 
 const app = {};
 
