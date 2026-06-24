@@ -34,6 +34,8 @@ For our live demo, our database hosts health facility locations with mock data f
 ## Project Objective
 The goal of NavHealth is to make finding healthcare services simpler and more informative than a typical Google or Yelp search. Users can search for health facilities by name, location, or services offered, filter results by accepted insurance providers, and read or post reviews — all in one place.
 
+This project was created as the second project for [CS5610 Web Development](https://johnguerra.co/classes/webDevelopment_online_summer_2026/) at Northeastern University Summer 2026.
+
 From a technical standpoint, the project was built to practice full-stack web development using Node.js, Express, MongoDB, and vanilla JavaScript with client-side rendering. Specific objectives include:
 
 - Building a multi-page application where each page is served as its own HTML file with its own CSS and JS modules.
