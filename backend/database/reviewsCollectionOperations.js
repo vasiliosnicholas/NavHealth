@@ -1,8 +1,6 @@
 import { isConnected, connectDb, getDb } from "./db.js";
 import { ObjectId } from "mongodb";
 
-process.loadEnvFile();
-
 const reviewsCollectionName =
   process.env.MONGODB_REVIEWS_COLLECTION || "reviews";
 
